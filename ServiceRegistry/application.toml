@@ -1,0 +1,37 @@
+############################################
+###       APPLICATION PARAMETERS         ###
+############################################
+
+Datasource_address="127.0.0.1"
+Datasource_port=3303
+Datasource_username="service_registry"
+Datasource_password="ZzNNpxrbZGVvfJ8"
+Datasource_database="arrowhead"
+
+
+# Service Registry web-server parameters
+Server_address="192.168.11.36"
+Server_port=8443
+
+############################################
+###       CUSTOM PARAMETERS              ###
+############################################
+
+# Name of the core system
+Core_system_name="serviceregistry"
+
+
+############################################
+###           SECURE MODE                ###
+############################################
+
+# configure secure mode
+
+# Set this to false to disable https mode
+Server_ssl_enabled=false
+
+Server_ssl_key_store="certificates/service_registry.pem"
+Server_ssl_key_store_file="certificates/service_registry.key"
+Server_ssl_client_auth="need" #"none" #"need"
+Server_ssl_trust_store="certificates/ca.pem"
+#Server_ssl_trust_store_password="123456"
