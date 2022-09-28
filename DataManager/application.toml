@@ -1,0 +1,52 @@
+############################################
+###       APPLICATION PARAMETERS         ###
+############################################
+
+# Database connection (mandatory)
+Datasource_address="127.0.0.1"
+Datasource_port=3303
+Datasource_username="datamanager"
+Datasource_password="gRLjXbqu0YwYhfK"
+Datasource_database="arrowhead"
+
+# Parameters of DataManager web-server
+Server_address="192.168.11.17"
+Server_port=8461
+
+# Websockets
+websockets_enabled=true
+
+# ACL
+acl_file="accesslist.acl"
+
+############################################
+###       CUSTOM PARAMETERS              ###
+############################################
+
+# Name of the core system
+Core_system_name="datamanager"
+
+# Show all request/response in debug log
+log_all_request_and_response=false
+
+# Service Registry web-server parameters (to register the DataManager's services)
+sr_address="192.168.11.17"
+sr_port=8443
+
+############################################
+###           SECURE MODE                ###
+############################################
+
+# configure secure mode
+
+# Set this to false to disable https mode
+server_ssl_enabled=false
+
+Server_ssl_key_store="certificates/datamanager.pem"
+Server_ssl_key_store_file="certificates/datamanager.key"
+Server_ssl_key_store_password="123456"
+Server_ssl_client_auth="need"
+Server_ssl_trust_store="../ServiceRegistry/certificates/ca.pem"
+#Server_ssl_trust_store_password="123456"
+
+#Disable_hostname_verifier=false

@@ -1,0 +1,12 @@
+# generic
+$SYS: gpPd@$SYS/*
+
+# sysop
+sysop: gpPd@*/*
+
+# mulle-342
+mulle342: r@mulle-342/*
+
+# specific example
+#serviceregistry.testcloud2.aitia.arrowhead.eu: gpd@examplesys1/temperature, g@examplesys2/temperature,
+

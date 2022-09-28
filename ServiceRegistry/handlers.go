@@ -12,10 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gorilla/mux"
-	//  "database/sql"
-	//  _ "github.com/go-sql-driver/mysql"
 	dto "arrowhead.eu/common/datamodels"
+	"github.com/gorilla/mux"
 )
 
 type LoginMsg struct {
@@ -274,7 +272,7 @@ func RegisterSystem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := registerSystem(GetSRDB(),regReq)
+	response, err := registerSystem(GetSRDB(), regReq)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -294,7 +292,7 @@ func RegisterSystem(w http.ResponseWriter, r *http.Request) {
 }
 
 func UnregisterSystem(w http.ResponseWriter, r *http.Request) {
-	
+
 	system_name := ""
 	if len(r.URL.Query()["system_name"]) == 1 {
 		system_name = strings.TrimSpace(r.URL.Query()["system_name"][0])
@@ -397,7 +395,7 @@ func PrivQueryAll(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	
+
 	response.Data = services
 	response.Count = len(response.Data)
 
@@ -501,7 +499,7 @@ type ServiceRegistryEntryList struct {
 // /serviceregistry/mgmt
 func HandleEntries(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("HandleEntries()")
-	
+
 	if r.Method == http.MethodGet {
 		var response dto.ServiceRegistryListResponseDTO
 
@@ -632,41 +630,41 @@ func HandleEntriesId(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("\tMGT::REG-REQ: %+v\n", system)
 		fmt.Printf("\tMGT::REG-CUR: %+v\n", request)
 
-			// convert incomplete to dto
-			if system.ServiceDefinition != "" {
-				request.ServiceDefinition = system.ServiceDefinition
-			}
-			if system.ProviderSystem != nil {
-				request.ProviderSystem = *system.ProviderSystem
-			}
-			if system.ServiceUri != "" {
-				request.ServiceUri = system.ServiceUri
-			}
-			if system.EndOfValidity != "" {
-				request.EndOfValidity = system.EndOfValidity
-			}
-			if system.Secure != "" {
-				request.Secure = system.Secure
-			}
-			if system.Metadata != nil {
-				request.Metadata = system.Metadata
-			}
-			if system.Version != nil {
-				request.Version = *system.Version
-			}
-			if len(system.Interfaces) > 0 {
-				request.Interfaces = system.Interfaces
-			}
-	
-			ok, err := updateServiceEntry(GetSRDB(), request, serviceId)
-			fmt.Printf("ok: %v\n", ok)
-			fmt.Println(err)
-			if ok == false || err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
-				return
-			}
-			w.WriteHeader(http.StatusOK)
+		// convert incomplete to dto
+		if system.ServiceDefinition != "" {
+			request.ServiceDefinition = system.ServiceDefinition
+		}
+		if system.ProviderSystem != nil {
+			request.ProviderSystem = *system.ProviderSystem
+		}
+		if system.ServiceUri != "" {
+			request.ServiceUri = system.ServiceUri
+		}
+		if system.EndOfValidity != "" {
+			request.EndOfValidity = system.EndOfValidity
+		}
+		if system.Secure != "" {
+			request.Secure = system.Secure
+		}
+		if system.Metadata != nil {
+			request.Metadata = system.Metadata
+		}
+		if system.Version != nil {
+			request.Version = *system.Version
+		}
+		if len(system.Interfaces) > 0 {
+			request.Interfaces = system.Interfaces
+		}
+
+		ok, err := updateServiceEntry(GetSRDB(), request, serviceId)
+		fmt.Printf("ok: %v\n", ok)
+		fmt.Println(err)
+		if ok == false || err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
 			return
+		}
+		w.WriteHeader(http.StatusOK)
+		return
 
 	case http.MethodDelete:
 		err = deleteServiceById(GetSRDB(), serviceId)
@@ -682,38 +680,35 @@ func HandleEntriesId(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
 }
 
-
 type ServiceRegistryGroupedDTO struct {
-	ServicesGroupedBySystems []ServicesGroupedBySystemDTO `json:"servicesGroupedBySystems"`
+	ServicesGroupedBySystems           []ServicesGroupedBySystemDTO            `json:"servicesGroupedBySystems"`
 	ServicesGroupedByServiceDefinition []ServicesGroupedByServiceDefinitionDTO `json:"servicesGroupedByServiceDefinition"`
-	AutoCompleteData AutoCompleteDataDTO `json:"autoCompleteData"`
+	AutoCompleteData                   AutoCompleteDataDTO                     `json:"autoCompleteData"`
 }
 
 type ServicesGroupedBySystemDTO struct {
-	SystemId int64 `json:"systemId"`
-	SystemName string `json:"systemName"`
-	Address string `json:"address"`
-	Port int `json:"port"`
-	Services []dto.ServiceRegistryResponseDTO `json:"services"`
+	SystemId   int64                            `json:"systemId"`
+	SystemName string                           `json:"systemName"`
+	Address    string                           `json:"address"`
+	Port       int                              `json:"port"`
+	Services   []dto.ServiceRegistryResponseDTO `json:"services"`
 }
 
 type ServicesGroupedByServiceDefinitionDTO struct {
 	ServiceDefinitionId int64  `json:"serviceDefinitionId"`
-	ServiceDefinition string  `json:"serviceDefinition"`
+	ServiceDefinition   string `json:"serviceDefinition"`
 }
-
 
 type AutoCompleteDataDTO struct {
-	ServiceList []dto.ServiceDTO `json:"serviceList"`
-	SystemList []dto.SystemResponseDTO `json:"systemList"`
-	InterfaceList []dto.InterfaceDTO `json:"interfaceList"`
+	ServiceList   []dto.ServiceDTO        `json:"serviceList"`
+	SystemList    []dto.SystemResponseDTO `json:"systemList"`
+	InterfaceList []dto.InterfaceDTO      `json:"interfaceList"`
 }
-
 
 // /serviceregistry/mgmt/grouped
 func HandleGroupedEntries(w http.ResponseWriter, r *http.Request) {
 	var ret ServiceRegistryGroupedDTO
-	
+
 	fmt.Println("HandleGroupedEntries()")
 
 	ret.ServicesGroupedBySystems = make([]ServicesGroupedBySystemDTO, 0)
@@ -733,7 +728,7 @@ func HandleGroupedEntries(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ret.ServicesGroupedByServiceDefinition = make([]ServicesGroupedByServiceDefinitionDTO, 0)
-	
+
 	ret.AutoCompleteData.InterfaceList, _ = getAllInterfaces(GetSRDB())
 	ret.AutoCompleteData.ServiceList, _ = getAllServiceDefinitionsSimple(GetSRDB())
 	ret.AutoCompleteData.SystemList, _ = getAllSystems(GetSRDB(), "ASC")
@@ -751,7 +746,7 @@ type InterfaceNameB struct {
 // /serviceregistry/mgmt/interfaces
 func HandleAllInterfaces(w http.ResponseWriter, r *http.Request) {
 	var err error
-	
+
 	fmt.Println("HandleAllInterfaces()")
 
 	switch r.Method {
@@ -799,8 +794,6 @@ func HandleAllInterfaces(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
-
 // //serviceregistry/mgmt/interfaces/{id}
 func HandleSInterfaceById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -819,7 +812,7 @@ func HandleSInterfaceById(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("HandleSInterfaceById(%v)\n", serviceDefId) //XXX validate id
 
 	switch r.Method {
-		case http.MethodGet:
+	case http.MethodGet:
 		ret, err := getInterfaceById(GetSRDB(), serviceDefId)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -830,60 +823,58 @@ func HandleSInterfaceById(w http.ResponseWriter, r *http.Request) {
 		jsonRespStr, _ := json.Marshal(ret)
 		fmt.Println(string(jsonRespStr))
 		fmt.Fprint(w, string(jsonRespStr))
-		case http.MethodPut:
-			body, err := getBody(r)
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				return
-			}
-			fmt.Println(body)
-			var request InterfaceNameB
-			err = json.Unmarshal(body, &request)
-			fmt.Printf("%+v\n", request)
-			err = updateInterfaceById(GetSRDB(), serviceDefId, request.InterfaceName)
-			ret, err := getInterfaceById(GetSRDB(), serviceDefId)
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				return
-			}
+	case http.MethodPut:
+		body, err := getBody(r)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		fmt.Println(body)
+		var request InterfaceNameB
+		err = json.Unmarshal(body, &request)
+		fmt.Printf("%+v\n", request)
+		err = updateInterfaceById(GetSRDB(), serviceDefId, request.InterfaceName)
+		ret, err := getInterfaceById(GetSRDB(), serviceDefId)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
-			w.Header().Add("Content-Type", "application/json")
-			jsonRespStr, _ := json.Marshal(ret)
-			fmt.Println(string(jsonRespStr))
-			fmt.Fprint(w, string(jsonRespStr))
+		w.Header().Add("Content-Type", "application/json")
+		jsonRespStr, _ := json.Marshal(ret)
+		fmt.Println(string(jsonRespStr))
+		fmt.Fprint(w, string(jsonRespStr))
 
-		case http.MethodDelete:
-			err = deleteInterfaceById(GetSRDB(), serviceDefId)
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				return
-			}
+	case http.MethodDelete:
+		err = deleteInterfaceById(GetSRDB(), serviceDefId)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
-		case http.MethodPatch:
-			body, err := getBody(r)
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				return
-			}
-			fmt.Println(body)
-			var request InterfaceNameB
-			err = json.Unmarshal(body, &request)
-			fmt.Printf("%+v\n", request)
-			err = updateInterfaceById(GetSRDB(), serviceDefId, request.InterfaceName)
-			ret, err := getInterfaceById(GetSRDB(), serviceDefId)
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				return
-			}
-			w.Header().Add("Content-Type", "application/json")
-			jsonRespStr, _ := json.Marshal(ret)
-			fmt.Println(string(jsonRespStr))
-			fmt.Fprint(w, string(jsonRespStr))
+	case http.MethodPatch:
+		body, err := getBody(r)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		fmt.Println(body)
+		var request InterfaceNameB
+		err = json.Unmarshal(body, &request)
+		fmt.Printf("%+v\n", request)
+		err = updateInterfaceById(GetSRDB(), serviceDefId, request.InterfaceName)
+		ret, err := getInterfaceById(GetSRDB(), serviceDefId)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		w.Header().Add("Content-Type", "application/json")
+		jsonRespStr, _ := json.Marshal(ret)
+		fmt.Println(string(jsonRespStr))
+		fmt.Fprint(w, string(jsonRespStr))
 	}
 
-	
 }
-
 
 // /mgmt/servicedef/{serviceDefinition}
 func HandleEntriesByServiceDefinition(w http.ResponseWriter, r *http.Request) { //XXX MUST IMPLEMENT!
@@ -933,14 +924,14 @@ func HandleEntriesByServiceDefinition(w http.ResponseWriter, r *http.Request) { 
 // /mgmt/services
 func HandleAllServiceDefs(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("HandleAllServiceDefs()\n")
-	
+
 	switch r.Method {
 	case http.MethodGet:
 		var err error
 		var ret dto.ServiceDefinitionResponseListDTO
 		ret.Data, err = getAllServiceDefinitions(GetSRDB())
 		if err != nil {
-			
+
 		}
 		ret.Count = int64(len(ret.Data))
 		w.Header().Add("Content-Type", "application/json")
@@ -977,8 +968,6 @@ func HandleAllServiceDefs(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-
-	
 }
 
 type serviceDefUpdate struct {
@@ -1071,13 +1060,12 @@ func HandleServiceDefById(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		
+
 		w.WriteHeader(http.StatusOK)
 	}
 
 	w.WriteHeader(http.StatusInternalServerError)
 }
-
 
 /*
 //
@@ -1192,6 +1180,7 @@ func HandleAllSystems(w http.ResponseWriter, r *http.Request) {
 type metadata struct {
 	Metadata map[string]string `json:"metadata"`
 }
+
 //
 func HandleSystemById(w http.ResponseWriter, r *http.Request) {
 
@@ -1287,14 +1276,13 @@ func HandleSystemById(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 		fmt.Printf("%+v\n", msg)
-		
-		
+
 		fmt.Printf("%+v\n", system)
 		for k, x := range msg {
 			if k == "metadata" {
 				fmt.Printf("Found METADATA:\n%v\n", x)
 				var systemMD dto.SystemRequestDTO
-				
+
 				md := make(map[string]string, 0)
 				json.Unmarshal(body, &systemMD)
 				if systemMD.Metadata != nil {
@@ -1319,7 +1307,7 @@ func HandleSystemById(w http.ResponseWriter, r *http.Request) {
 					system.SystemName = v
 				} else if k == "address" {
 					system.Address = v
-				} else if k ==  "authenticationInfo" {
+				} else if k == "authenticationInfo" {
 					system.AuthenticationInfo = v
 				}
 			default:
@@ -1327,7 +1315,7 @@ func HandleSystemById(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		fmt.Printf("%+v\n", system)
-		
+
 		ret, err := modifySystem(GetSRDB(), id, system)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)

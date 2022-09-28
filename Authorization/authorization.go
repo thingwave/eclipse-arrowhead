@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/pem"
 	"fmt"
 
 	"io/ioutil"
@@ -14,10 +15,8 @@ import (
 	"syscall"
 	"time"
 
+	util "arrowhead.eu/common/util"
 	"github.com/BurntSushi/toml"
-
-	db "arrowhead.eu/common/database"
-	dto "arrowhead.eu/common/datamodels"
 )
 
 type tomlConfig struct {
@@ -32,6 +31,9 @@ type tomlConfig struct {
 
 	Core_system_name string
 
+	Sr_address string `toml:"sr_address"`
+	Sr_port    int    `toml:"sr_port"`
+
 	Server_ssl_enabled              bool
 	Server_ssl_client_auth          string
 	Server_ssl_key_store            string
@@ -41,29 +43,77 @@ type tomlConfig struct {
 }
 
 var config tomlConfig
-var mySystemId int64
 
-func timer() {
+//var mySystemId int64
+
+var publicKey string = ""
+
+func getCert() string {
+	return publicKey
+}
+
+func Timer() {
+	var t int64 = 0
+
 	for {
 		time.Sleep(1 * time.Second)
+		t++
 	}
 }
 
+//
 func SetupCloseHandler() {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
 		<-c
-		fmt.Println("\nCtrl-C pressed\nUnregister services...\n")
+		fmt.Println("\nCtrl-C pressed")
+		util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "authorization-control-intra", "/authorization/intracloud/check")
+		util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "auth-public-key", "/authorization/publickey")
 		time.Sleep(1 * time.Second)
 		os.Exit(0)
 	}()
 
 }
 
+func loadCert(filename string) error {
+	certcontent, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+
+	text := string(certcontent)
+	//fmt.Println(text)
+
+	block, _ := pem.Decode([]byte(text))
+	if block == nil {
+		return err
+	}
+	cert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		return err
+	}
+
+	publicKeyDer, err := x509.MarshalPKIXPublicKey(cert.PublicKey)
+	if err != nil {
+		return err
+	}
+
+	publicKeyBlock := pem.Block{
+		Type:  "PUBLIC KEY",
+		Bytes: publicKeyDer,
+	}
+
+	publicKeyPem := string(pem.EncodeToMemory(&publicKeyBlock))
+	publicKey = publicKeyPem
+	//fmt.Println(publicKeyPem)
+
+	return nil
+}
+
 func main() {
-	log.Println("MySQL ServiceRegistry in Go, © Lulea University of Technology AB 2022")
+	fmt.Println("MySQL Authorization in Go, © ThingWave AB 2022")
 
 	SetupCloseHandler()
 
@@ -79,61 +129,35 @@ func main() {
 	fmt.Printf("server.ssl.enabled: %v\n", config.Server_ssl_enabled)
 	fmt.Printf("Server.ssl.client.auth: %v\n", config.Server_ssl_client_auth)
 
-	db, err := db.OpenDatabase(config.Datasource_address, config.Datasource_port, config.Datasource_username, config.Datasource_password, config.Datasource_database)
+	err := loadCert(config.Server_ssl_key_store)
+	if err != nil {
+		fmt.Printf("Could not load certificate: %s\nAborting...", config.Server_ssl_key_store)
+		return
+	}
+
+	db, err := OpenDatabase(config.Datasource_address, config.Datasource_port, config.Datasource_username, config.Datasource_password, config.Datasource_database)
 	if err != nil {
 		log.Fatal("Could not connect to database!")
 	}
 	defer db.Close()
-	SetSRDB(db)
 
-	mySystemId = checkProvider(db, config.Core_system_name)
-	if mySystemId == -1 {
-		/*systemId, err = addSystem(db, "serviceregistry")
-		if err != nil {
-			return ret, err
-		}*/
+	var secMode int = 0
+	if config.Server_ssl_enabled {
+		secMode = 1
 	}
-	//fmt.Printf("My systemId is: %d\n", mySystemId)
-	unregisterAllServicesForSystem(db, config.Core_system_name)
+	util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, secMode)
 
-	var srvRegReq dto.ServiceRegistryEntryDTO
-	srvRegReq.ServiceDefinition = "service-register"
-	srvRegReq.ProviderSystem.SystemName = config.Core_system_name
-	srvRegReq.ProviderSystem.Address = config.Server_address
-	srvRegReq.ProviderSystem.Port = config.Server_port
-	srvRegReq.ProviderSystem.AuthenticationInfo = ""
-	srvRegReq.ProviderSystem.Metadata = nil
+	util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "authorization-control-intra", "/authorization/intracloud/check")
+	util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "auth-public-key", "/authorization/publickey")
 
-	addOrUpdateSystem(db, srvRegReq.ProviderSystem)
-
-	srvRegReq.ServiceUri = "/serviceregistry/register"
-	srvRegReq.EndOfValidity = ""
-	srvRegReq.Secure = "NOT_SECURE"
-	srvRegReq.Metadata = nil
-	srvRegReq.Version = 1
-	srvRegReq.Interfaces = make([]string, 1)
-	srvRegReq.Interfaces[0] = "HTTP-INSECURE-JSON"
-	registerServiceForSystem(db, srvRegReq)
-
-	srvRegReq.ServiceDefinition = "service-register"
-	srvRegReq.ServiceUri = "/serviceregistry/unregister"
-	registerServiceForSystem(db, srvRegReq)
-
-	srvRegReq.ServiceDefinition = "service-unregister"
-	srvRegReq.ServiceUri = "/serviceregistry/unregister"
-	registerServiceForSystem(db, srvRegReq)
-
-	srvRegReq.ServiceDefinition = "register-system"
-	srvRegReq.ServiceUri = "/serviceregistry/register-system"
-	registerServiceForSystem(db, srvRegReq)
-
-	srvRegReq.ServiceDefinition = "unregister-system"
-	srvRegReq.ServiceUri = "/serviceregistry/unregister-system"
-	registerServiceForSystem(db, srvRegReq)
-
-	srvRegReq.ServiceDefinition = "pull-systems"
-	srvRegReq.ServiceUri = "/serviceregistry/pull-systems"
-	registerServiceForSystem(db, srvRegReq)
+	interfaces := make([]string, 1)
+	if config.Server_ssl_enabled {
+		interfaces[0] = "HTTP-SECURE-JSON"
+	} else {
+		interfaces[0] = "HTTP-INSECURE-JSON"
+	}
+	util.RegisterService(config.Core_system_name, config.Server_address, config.Server_port, "authorization-control-intra", "/authorization/intracloud/check", 1, interfaces)
+	util.RegisterService(config.Core_system_name, config.Server_address, config.Server_port, "auth-public-key", "/authorization/publickey", 1, interfaces)
 
 	router := NewRouter(config.Server_ssl_enabled)
 
@@ -159,6 +183,7 @@ func main() {
 		}
 		tlsConfig.BuildNameToCertificate()
 
+		// Create a Server instance to listen on a port with the TLS config
 		server := &http.Server{
 			Addr:      config.Server_address + ":" + strconv.Itoa(config.Server_port),
 			Handler:   router,
@@ -171,6 +196,8 @@ func main() {
 
 	} else {
 		log.Printf("Starting HTTP server\n")
+
+		// Create a Server instance to listen on a port without TLS
 		server := &http.Server{
 			Addr:    config.Server_address + ":" + strconv.Itoa(config.Server_port),
 			Handler: router,
