@@ -62,7 +62,7 @@ func SetupCloseHandler() {
 }
 
 func main() {
-	log.Println("MySQL Certificate Authority in Go, © Lulea University of Technology AB 2022")
+	log.Println("MySQL Certificate Authority in Go, © ThingWave AB 2022")
 
 	SetupCloseHandler()
 

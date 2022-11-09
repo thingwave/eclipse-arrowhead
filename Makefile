@@ -1,4 +1,4 @@
-SUBDIRS = ServiceRegistry Orchestrator Authorization DataManager
+SUBDIRS = ServiceRegistry Orchestrator Authorization DataManager CertificateAuthority
 
 all:
 	for dir in $(SUBDIRS); do \

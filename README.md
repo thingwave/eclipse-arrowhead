@@ -12,5 +12,8 @@ Implements most features.
 ## Authorization
 Implements most features, excekt intercloud and token management.
 
+## CertificateAuthority
+Implements no features.
+
 ## DataManager
 Implements all features.

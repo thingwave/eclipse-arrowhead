@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -27,8 +28,8 @@ func getBody(r *http.Request) ([]byte, error) {
 }
 
 func CheckCertificate(w http.ResponseWriter, r *http.Request) {
-	/*var queryReq ServiceQueryForm
-	var ret dto.ServiceQueryResultDTO
+	var checkReq TrustedKeyCheckRequestDTO
+	//var ret TrustedKeyCheckResponseDTO
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -38,16 +39,20 @@ func CheckCertificate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = json.Unmarshal(body, &queryReq)
+	err = json.Unmarshal(body, &checkReq)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
-	} else {
+	}
 
-		if queryReq.ServiceDefinitionRequirement == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
+	if checkReq.Version != 1 || checkReq.PublicKey == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	/*
+
+
 
 		fmt.Printf("################################\nQuery():\n %+v\n################################\n", queryReq)
 		var unfilteredHits int = 0
@@ -55,7 +60,6 @@ func CheckCertificate(w http.ResponseWriter, r *http.Request) {
 		ret.UnfilteredHits = unfilteredHits
 		retJson, _ := json.Marshal(ret)
 		fmt.Fprint(w, string(retJson))
-		return
-	}
+
 	*/
 }
