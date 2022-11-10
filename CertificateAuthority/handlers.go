@@ -63,3 +63,42 @@ func CheckCertificate(w http.ResponseWriter, r *http.Request) {
 
 	*/
 }
+
+func PrivSign(w http.ResponseWriter, r *http.Request) {
+	var signReq CertificateSigningRequest
+	//var signResp CertificateSigningResponse
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	body, err := getBody(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = json.Unmarshal(body, &signReq)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+}
+
+func PrivCheckTrustedKey(w http.ResponseWriter, r *http.Request) {
+	var checkReq TrustedKeyCheckRequest
+	//var checkResp TrustedKeyCheckResponse
+
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
+	body, err := getBody(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err = json.Unmarshal(body, &checkReq)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+}

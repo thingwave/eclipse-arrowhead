@@ -31,30 +31,18 @@ var clientRoutes = Routes{
 
 // Private endpoints - /certificate-authority/ + <Route below>
 var privateRoutes = Routes{
-	/*Route{
-		"PullSystems",
-		[]string{"GET"},
-		"/pull-systems",
-		PrivPullSystems,
-	},
 	Route{
-		"QueryAll",
-		[]string{"GET"},
-		"/query/all",
-		PrivQueryAll,
-	},
-	Route{
-		"QuerySystem",
+		"SignCSR",
 		[]string{"POST"},
-		"/query/system",
-		PrivQuerySystem,
+		"/sign",
+		PrivSign,
 	},
 	Route{
-		"QuerySystemByID",
-		[]string{"GET"},
-		"/query/system/{id:[0-9]+}",
-		PrivQuerySystemById,
-	},*/
+		"CheckTrustedKey",
+		[]string{"POST"},
+		"/checkTrustedKey",
+		PrivCheckTrustedKey,
+	},
 }
 
 // Management endpoints - /certificate-authority/mgmt/ + <Route below>
