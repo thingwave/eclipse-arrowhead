@@ -1,3 +1,11 @@
+# Introduction
+
+This is a Go based implementation of Eclipse Arrowhead.
+
+# Build
+To build all core systems, type:
+    > make all
+
 # Status:
 
 ## ArrowheadClient
