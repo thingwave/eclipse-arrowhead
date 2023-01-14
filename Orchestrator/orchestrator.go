@@ -31,6 +31,7 @@ import (
 	//"database/sql"
 	//_ "github.com/go-sql-driver/mysql"
 	db "arrowhead.eu/common/database"
+	util "arrowhead.eu/common/util"
 )
 
 type tomlConfig struct {
@@ -74,7 +75,8 @@ func SetupCloseHandler() {
 
 	go func() {
 		<-c
-		//    fmt.Println("\nCtrl-C pressed")
+		fmt.Println("\nCtrl-C pressed")
+		util.UnregisterService("orchestrator", config.Server_address, config.Server_port, "orchestration-service", "/orchestration")
 		//    time.Sleep(1 * time.Second)
 		os.Exit(0)
 	}()
@@ -104,6 +106,8 @@ func main() {
 	}
 	defer db.Close()
 	SetORDB(db)
+
+	util.RegisterService("orchestrator", config.Server_address, config.Server_port, "orchestration-service", "/orchestration", 1, []string{"HTTP-SECURE-JSON"})
 
 	router := NewRouter(config.Server_ssl_enabled)
 

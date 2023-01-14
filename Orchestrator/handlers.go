@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"strconv"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
-	"github.com/gorilla/mux"
 	dto "arrowhead.eu/common/datamodels"
+	"github.com/gorilla/mux"
 )
 
 /*
@@ -108,10 +108,10 @@ func StartStoreOrchestration(w http.ResponseWriter, r *http.Request) {
 	//fmt.Printf("ID: %s\n", vars["id"])
 
 	systemId32, err := strconv.Atoi(vars["id"])
-        if err != nil {
-                w.WriteHeader(http.StatusBadRequest)
-                return
-        }
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	systemId := int64(systemId32)
 
 	// do the orchestration process below
@@ -123,7 +123,7 @@ func StartStoreOrchestration(w http.ResponseWriter, r *http.Request) {
 		errMsg.ExceptionType = "INVALID_PARAMETER"
 		jsonRespStr, _ := json.Marshal(errMsg)
 		w.Header().Add("Content-Type", "application/json")
-                w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, string(jsonRespStr))
 		return
 	}
@@ -133,7 +133,6 @@ func StartStoreOrchestration(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprint(w, string("Could not get orchestration\n"))
 	}
-
 
 	fmt.Println(string(jsonRespStr))
 	w.Header().Add("Content-Type", "application/json")
@@ -174,7 +173,7 @@ func HandleStoreEntryByID(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fmt.Printf("ID: %s\n", vars["id"])
+	//fmt.Printf("ID: %s\n", vars["id"])
 
 	switch r.Method {
 	case http.MethodGet:
@@ -237,9 +236,9 @@ func HandleStoreEntriesByTopPriority(w http.ResponseWriter, r *http.Request) {
 	res.Count = len(res.Data)
 
 	jsonRespStr, _ := json.Marshal(res)
-	fmt.Println(string(jsonRespStr))
+	//fmt.Println(string(jsonRespStr))
 	w.Header().Add("Content-Type", "application/json")
-	fmt.Fprint(w, string(jsonRespStr) + "\n")
+	fmt.Fprint(w, string(jsonRespStr)+"\n")
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -250,7 +249,6 @@ type ConsumerRule struct {
 	ServiceDefinitionName string `json:"serviceDefinitionName"`
 	ServiceInterfaceName  string `json:"ServiceInterfaceName,omitempty"`
 }*/
-
 
 func HandleStoreModifyPriority(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("HandleStoreModifyPriority\n")
