@@ -1,11 +1,25 @@
+/********************************************************************************
+ * Copyright (c) 2022 Lulea University of Technology
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   ThingWave AB - implementation
+ *   Arrowhead Consortia - conceptualization
+ ********************************************************************************/
+
 package main
 
 import (
-//	"fmt"
+	//	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	auth "arrowhead.eu/common/auth"
+	"github.com/gorilla/mux"
 )
 
 func NewRouter(sslEnabled bool) *mux.Router {

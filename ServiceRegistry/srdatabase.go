@@ -1,3 +1,17 @@
+/********************************************************************************
+ * Copyright (c) 2022 Lulea University of Technology
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   ThingWave AB - implementation
+ *   Arrowhead Consortia - conceptualization
+ ********************************************************************************/
+
 package main
 
 import (
@@ -681,7 +695,7 @@ func insertServiceEntry(db *sql.DB, request dto.ServiceRegistryEntryDTO, systemI
 
 	// update/insert into service_interface and service_registry_interface_connection below
 	for k, v := range request.Interfaces { //k
-		fmt.Printf("checkAndAdd[%v]: %s\n", k, v)
+		//fmt.Printf("checkAndAdd[%v]: %s\n", k, v)
 		interfaceId, _ := insertOrUpdateServiceInterface(db, v)
 		insertInterfaceConnection(db, id, interfaceId)
 	}
