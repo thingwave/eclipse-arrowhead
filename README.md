@@ -1,6 +1,8 @@
 # Introduction
 
-This is a Go based implementation of the core systems in Eclipse Arrowhead.
+This is a Go based implementation of the core systems in Eclipse Arrowhead. The primary source for documentation, code and certificates is the [Core-Java-Spring](https://github.com/eclipse-arrowhead/core-java-spring).
+
+The web page is Eclipse Arrowhead can be found [here](https://www.arrowhead.eu).
 
 # Build
 To build all core systems, type:
