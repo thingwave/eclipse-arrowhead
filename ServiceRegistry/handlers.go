@@ -122,11 +122,13 @@ func Query(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		fmt.Printf("################################\nQuery():\n %+v\n################################\n", queryReq)
+		//fmt.Printf("################################\nQuery():\n %+v\n################################\n", queryReq)
 		var unfilteredHits int = 0
 		ret.ServiceQueryData, _ = queryServicesForName(GetSRDB(), queryReq, &unfilteredHits) //XX BUG HERE SOMEWHERE
 		ret.UnfilteredHits = unfilteredHits
 		retJson, _ := json.Marshal(ret)
+
+		//fmt.Println(string(retJson))
 		fmt.Fprint(w, string(retJson))
 		return
 	}
