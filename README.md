@@ -8,6 +8,19 @@ To build all core systems, type:
     > make all
 ```
 
+# Certificate management
+This implementation relies heavy on PEM certificates. Documentation will be added on how to convert original PKCS#12 certificates used by the Java Spring reference implementation of Eclipse Arrowhead to PEM certificates.
+
+# Todo list
+
+Below is a list if some of the planned features:
+
+* Debian package support
+* RHEL package support
+* More core systems
+* Token support
+* ...
+
 # Status:
 
 ## ArrowheadClient
