@@ -10,7 +10,7 @@ Datasource_password="gRLjXbqu0YwYhfK"
 Datasource_database="arrowhead"
 
 # Parameters of DataManager web-server
-Server_address="192.168.11.17"
+Server_address="192.168.11.22"
 Server_port=8461
 
 # Websockets
@@ -30,7 +30,7 @@ Core_system_name="datamanager"
 log_all_request_and_response=false
 
 # Service Registry web-server parameters (to register the DataManager's services)
-sr_address="192.168.11.17"
+sr_address="192.168.11.22"
 sr_port=8443
 
 ############################################

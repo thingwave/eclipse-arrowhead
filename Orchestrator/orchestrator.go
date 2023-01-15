@@ -1,3 +1,17 @@
+/********************************************************************************
+ * Copyright (c) 2022 Lulea University of Technology
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   ThingWave AB - implementation
+ *   Arrowhead Consortia - conceptualization
+ ********************************************************************************/
+
 package main
 
 import (
@@ -17,6 +31,7 @@ import (
 	//"database/sql"
 	//_ "github.com/go-sql-driver/mysql"
 	db "arrowhead.eu/common/database"
+	util "arrowhead.eu/common/util"
 )
 
 type tomlConfig struct {
@@ -60,7 +75,8 @@ func SetupCloseHandler() {
 
 	go func() {
 		<-c
-		//    fmt.Println("\nCtrl-C pressed")
+		fmt.Println("\nCtrl-C pressed")
+		util.UnregisterService("orchestrator", config.Server_address, config.Server_port, "orchestration-service", "/orchestration")
 		//    time.Sleep(1 * time.Second)
 		os.Exit(0)
 	}()
@@ -90,6 +106,11 @@ func main() {
 	}
 	defer db.Close()
 	SetORDB(db)
+
+	//util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, secMode)
+
+	// register all services
+	util.RegisterService("orchestrator", config.Server_address, config.Server_port, "orchestration-service", "/orchestration", 1, []string{"HTTP-INSECURE-JSON"})
 
 	router := NewRouter(config.Server_ssl_enabled)
 

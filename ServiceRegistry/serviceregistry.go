@@ -1,3 +1,17 @@
+/********************************************************************************
+ * Copyright (c) 2022 Lulea University of Technology
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   ThingWave AB - implementation
+ *   Arrowhead Consortia - conceptualization
+ ********************************************************************************/
+
 package main
 
 import (
@@ -55,7 +69,7 @@ func SetupCloseHandler() {
 
 	go func() {
 		<-c
-		fmt.Println("\nCtrl-C pressed\nUnregister services...\n")
+		fmt.Println("\nCtrl-C pressed\nUnregistering services...\n")
 		time.Sleep(1 * time.Second)
 		os.Exit(0)
 	}()
@@ -63,7 +77,7 @@ func SetupCloseHandler() {
 }
 
 func main() {
-	log.Println("MySQL ServiceRegistry in Go, © Lulea University of Technology AB 2022")
+	log.Println("Eclipse Arrowhead ServiceRegistry in Go, © Lulea University of Technology AB 2022")
 
 	SetupCloseHandler()
 

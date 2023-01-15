@@ -40,13 +40,16 @@ func RegisterService(systemname string, address string, port int, service_defini
 
 	var req dto.ServiceRegistryEntryDTO
 	req.ServiceDefinition = service_definition
-	req.ProviderSystem.SystemName = systemName
-	req.ProviderSystem.Address = systemAddress
-	req.ProviderSystem.Port = systemPort
+
+	var provider dto.SystemRequestDTO
+	provider.SystemName = systemname
+	provider.Address = address
+	provider.Port = port
+	req.ProviderSystem = provider
 	//req.ProviderSystem.AuthenticationInfo = systemAuthenticationInfo
 	//req.ProviderSystem.Metadata = systemMetadata
 	req.ServiceUri = service_uri
-	req.EndOfValidity = "2022-12-31T23:59:59"
+	req.EndOfValidity = "2023-12-31T23:59:59"
 	req.Secure = "NOT_SECURE"
 	if srSecure == 1 {
 		req.Secure = "CERTIFICATE" // XXX TOKEN support
@@ -60,7 +63,7 @@ func RegisterService(systemname string, address string, port int, service_defini
 	}
 	fmt.Printf("%s\n", string(jsonReq))
 
-	srUrl := "http://192.168.11.17:8443/serviceregistry/register" // fmt.Sprintf("%s://%s:%d/serviceregistry/register", mode, sr_address, sr_port)
+	srUrl := "http://192.168.11.22:8443/serviceregistry/register" // fmt.Sprintf("%s://%s:%d/serviceregistry/register", mode, sr_address, sr_port)
 
 	request, error := http.NewRequest("POST", srUrl, bytes.NewBuffer(jsonReq))
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
@@ -85,7 +88,7 @@ func UnregisterService(systemname string, address string, port int, service_defi
 	log.Printf("UnregisterService('%s', '%s', %d, '%s', '%s')\n", systemname, address, port, service_definition, service_uri)
 
 	client := &http.Client{}
-	url := fmt.Sprintf("http://192.168.11.17:8443/serviceregistry/unregister?service_definition=%s&system_name=%s&address=%s&port=%d", service_definition, systemname, address, port)
+	url := fmt.Sprintf("http://192.168.11.22:8443/serviceregistry/unregister?service_definition=%s&system_name=%s&address=%s&port=%d", service_definition, systemname, address, port)
 	fmt.Printf("URL: %s\n", url)
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {

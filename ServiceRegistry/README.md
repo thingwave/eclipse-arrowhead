@@ -1,6 +1,14 @@
 # Eclipse Arrowhead Serviceregistry in Go
 This is a an Arrowhead Service registry written in Go.
 
+## Usage
+To be able to use the Service registry, you mst modify application.toml and set the correct IP address to host running the Serviceregistry.
+
+```
+# Service Registry web-server parameters
+Server_address="192.168.11.22"
+Server_port=8443
+```
 
 ## Endpoints
 

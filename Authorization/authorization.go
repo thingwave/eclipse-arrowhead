@@ -1,3 +1,17 @@
+/********************************************************************************
+ * Copyright (c) 2022 Lulea University of Technology
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   ThingWave AB - implementation
+ *   Arrowhead Consortia - conceptualization
+ ********************************************************************************/
+
 package main
 
 import (
@@ -69,8 +83,8 @@ func SetupCloseHandler() {
 	go func() {
 		<-c
 		fmt.Println("\nCtrl-C pressed")
-		util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "authorization-control-intra", "/authorization/intracloud/check")
-		util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "auth-public-key", "/authorization/publickey")
+		util.UnregisterService("authorization", config.Server_address, config.Server_port, "authorization-control-intra", "/authorization/intracloud/check")
+		util.UnregisterService("authorization", config.Server_address, config.Server_port, "auth-public-key", "/authorization/publickey")
 		time.Sleep(1 * time.Second)
 		os.Exit(0)
 	}()
@@ -141,14 +155,14 @@ func main() {
 	}
 	defer db.Close()
 
-	var secMode int = 0
+	/*var secMode int = 0
 	if config.Server_ssl_enabled {
 		secMode = 1
 	}
-	util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, secMode)
+	util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, secMode)*/
 
-	util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "authorization-control-intra", "/authorization/intracloud/check")
-	util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "auth-public-key", "/authorization/publickey")
+	//util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "authorization-control-intra", "/authorization/intracloud/check")
+	//util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "auth-public-key", "/authorization/publickey")
 
 	interfaces := make([]string, 1)
 	if config.Server_ssl_enabled {
