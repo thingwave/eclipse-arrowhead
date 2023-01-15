@@ -10,7 +10,7 @@ Datasource_database="arrowhead"
 
 
 # Service Registry web-server parameters
-Server_address="192.168.11.17"
+Server_address="192.168.11.22"
 Server_port=8443
 
 ############################################

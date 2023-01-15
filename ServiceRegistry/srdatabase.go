@@ -31,6 +31,7 @@ import (
 	//db "arrowhead.eu/common/database"
 )
 
+/*
 type Provider struct {
 	ID int `json:"id"`
 	//    System_id int `json:"system_id"`
@@ -42,7 +43,7 @@ type Provider struct {
 	UpdatedAt  string `json:"updatedAt"`
 	ServiceUri string
 }
-
+*/
 type ServiceInterface struct {
 	ID             int    `json:"id"`
 	Interface_name string `json:"interface_name"`
@@ -541,6 +542,8 @@ func registerServiceForSystem(db *sql.DB, serviceRegReq dto.ServiceRegistryEntry
 		if err != nil {
 			return ret, fmt.Errorf("No provider found, and could not add new provider")
 		}
+	} else {
+		_ = updateProvider(db, serviceRegReq.ProviderSystem, systemId)
 	}
 
 	// validate service definition
@@ -694,7 +697,7 @@ func insertServiceEntry(db *sql.DB, request dto.ServiceRegistryEntryDTO, systemI
 	}
 
 	// update/insert into service_interface and service_registry_interface_connection below
-	for k, v := range request.Interfaces { //k
+	for _, v := range request.Interfaces { //k
 		//fmt.Printf("checkAndAdd[%v]: %s\n", k, v)
 		interfaceId, _ := insertOrUpdateServiceInterface(db, v)
 		insertInterfaceConnection(db, id, interfaceId)
@@ -723,6 +726,22 @@ func checkProvider(db *sql.DB, systemName string) int64 {
 	}
 
 	return int64(id)
+}
+
+func updateProvider(db *sql.DB, system dto.SystemRequestDTO, systemId int64) error {
+	var systemName string = system.SystemName
+	var address string = system.Address
+	var port int = system.Port
+	//var authenticationInfo = newNullString(system.AuthenticationInfo)
+
+	fmt.Printf("updateProvider('%s', '%s', %d):\n", systemName, address, port)
+
+	_, err := db.Exec("UPDATE system_ (address, port, updated_at) VALUES(?, ?, NOW()) WHERE id=?", address, port, systemId) //XX metadata is NULL?
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func unregisterAllServicesForSystem(db *sql.DB, systemName string) {

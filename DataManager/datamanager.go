@@ -183,14 +183,14 @@ func main() {
 		os.Exit(-1)
 	}
 
-	var secMode int = 0
+	/*var secMode int = 0
 	if config.Server_ssl_enabled {
 		secMode = 1
 	}
-	util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, secMode)
+	util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, secMode)*/
 
-	util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "historian", "/datamanager/historian")
-	util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "proxy", "/datamanager/proxy")
+	//util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "historian", "/datamanager/historian")
+	//util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "proxy", "/datamanager/proxy")
 
 	interfaces := make([]string, 1)
 	if config.Server_ssl_enabled {

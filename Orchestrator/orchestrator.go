@@ -107,7 +107,10 @@ func main() {
 	defer db.Close()
 	SetORDB(db)
 
-	util.RegisterService("orchestrator", config.Server_address, config.Server_port, "orchestration-service", "/orchestration", 1, []string{"HTTP-SECURE-JSON"})
+	//util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, secMode)
+
+	// register all services
+	util.RegisterService("orchestrator", config.Server_address, config.Server_port, "orchestration-service", "/orchestration", 1, []string{"HTTP-INSECURE-JSON"})
 
 	router := NewRouter(config.Server_ssl_enabled)
 
