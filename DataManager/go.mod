@@ -1,6 +1,6 @@
 module datamanager
 
-go 1.13
+go 1.18
 
 replace arrowhead.eu/common/datamodels => ../common/datamodels
 
