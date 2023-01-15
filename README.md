@@ -1,6 +1,6 @@
 # Introduction
 
-This is a Go based implementation of Eclipse Arrowhead.
+This is a Go based implementation of the core systems in Eclipse Arrowhead.
 
 # Build
 To build all core systems, type:
@@ -24,3 +24,4 @@ Implements most features, excekt intercloud and token management.
 
 ## DataManager
 Implements all features.
+
