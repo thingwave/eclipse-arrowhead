@@ -13,60 +13,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
-/*
-type LoginMsg struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-
-func Login(w http.ResponseWriter, r *http.Request) {
-	//w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
-	//r.ParseForm()
-	//username := r.Form.Get("username")
-	//password := r.Form.Get("password")
-	var loginMsg LoginMsg
-	_ = json.NewDecoder(r.Body).Decode(&loginMsg)
-	fmt.Println("Username: " + loginMsg.Username)
-	fmt.Println("Password: " + loginMsg.Password)
-
-	if loginMsg.Username == "jench" && loginMsg.Password == "supersecret" {
-	} else {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	//w.Header().Set("Location", "dashboard.html")
-	//w.WriteHeader(http.StatusFound)
-	w.Header().Set("Content-type", "application/jwt")
-	hdr := JWT_hdr{
-		Alg: "HS256",
-		Typ: "JWT",
-	}
-	payload := JWT_payload{
-		Iss:   "https://127.0.0.1:8443",
-		Exp:   time.Now().Unix() + 3600,
-		Email: "jens.eliasson@thingwave.eu",
-	}
-	retJsonHdr, _ := json.Marshal(hdr)
-	retJsonPayload, _ := json.Marshal(payload)
-	//fmt.Fprint(w, string(retJson))
-	fmt.Fprint(w, base64.StdEncoding.EncodeToString(retJsonHdr)+"."+base64.StdEncoding.EncodeToString(retJsonPayload)+".")
-
-	fmt.Printf("Login called\n")
-}
-
-*/
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func Echo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
 
 	fmt.Fprint(w, "Got it!")
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func Orchestration(w http.ResponseWriter, r *http.Request) {
 	var request dto.OrchestrationFormRequestDTO
 	var response dto.OrchestrationResponseDTO
@@ -99,8 +53,7 @@ func Orchestration(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(jsonRespStr))
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func StartStoreOrchestration(w http.ResponseWriter, r *http.Request) {
 	var response dto.OrchestrationResponseDTO
 
@@ -139,8 +92,7 @@ func StartStoreOrchestration(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(jsonRespStr))
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func HandleAllStoreEntries(w http.ResponseWriter, r *http.Request) {
 	var response dto.StoreEntryList
 
@@ -164,8 +116,7 @@ func HandleAllStoreEntries(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(jsonRespStr))
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func HandleStoreEntryByID(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
@@ -181,13 +132,12 @@ func HandleStoreEntryByID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func HandleStoreEntrysByConsumer(w http.ResponseWriter, r *http.Request) {
 
 }
 
-///////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 // GET /orchestrator/mgmt/store/all_top_priority
 func HandleStoreEntriesByTopPriority(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("HandleStoreEntriesByTopPriority()\n")

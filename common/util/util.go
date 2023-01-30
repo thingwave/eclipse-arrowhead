@@ -6,10 +6,12 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
+  "time"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+  "strconv"
 
 	dto "arrowhead.eu/common/datamodels"
 )
@@ -171,4 +173,13 @@ func SetAuthenticationInfo(fileName string) (string, error) {
 	//fmt.Printf("###\n%s\n###\n", cert)
 	systemAuthenticationInfo = cert
 	return cert, nil
+}
+
+
+func Timestamp2Arrowhead(ts string) string {
+	//fmt.Printf("timestamp2Arrowhead(%s)\n", ts)
+	intTs, _ := strconv.Atoi(ts)
+	timestamp := time.Unix(int64(intTs), 0)
+
+	return timestamp.UTC().Format(time.RFC3339)
 }
