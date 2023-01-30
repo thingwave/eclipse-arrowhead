@@ -118,7 +118,7 @@ func main() {
 	if config.Server_ssl_enabled {
 		authenticationInfo, err = util.SetAuthenticationInfo(config.Server_ssl_key_store)
 		if err != nil {
-			fmt.Println("Could not load system certificte public key!")
+			fmt.Println("Could not load system certificate public key!")
 			return
 		}
 		interfaces[0] = "HTTP-SECURE-JSON"
@@ -134,7 +134,7 @@ func main() {
 
 		authenticationInfo, err = util.SetAuthenticationInfo(config.Server_ssl_key_store)
 		if err != nil {
-			fmt.Println("Could not load system certificte public key!")
+			fmt.Println("Could not load system certificate public key!")
 			return
 		}
 
