@@ -46,6 +46,9 @@ type tomlConfig struct {
 
 	Core_system_name string
 
+	Sr_address string
+	Sr_port    int
+
 	Server_ssl_enabled              bool
 	Server_ssl_client_auth          string
 	Server_ssl_key_store            string
@@ -55,6 +58,7 @@ type tomlConfig struct {
 }
 
 var config tomlConfig
+var authenticationInfo string = ""
 
 var t = 0
 
@@ -67,8 +71,6 @@ func Timer() {
 	}
 }
 
-//
-//
 func SetupCloseHandler() {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
@@ -97,6 +99,8 @@ func main() {
 	fmt.Printf("server.address: %s\n", config.Server_address)
 	fmt.Printf("server.port: %d\n", config.Server_port)
 	fmt.Printf("core.system.name: %s\n", config.Core_system_name)
+	fmt.Printf("sr.address: %s\n", config.Sr_address)
+	fmt.Printf("sr.port: %d\n", config.Sr_port)
 	fmt.Printf("server.ssl.enabled: %v\n", config.Server_ssl_enabled)
 	fmt.Printf("Server.ssl.client.auth: %v\n", config.Server_ssl_client_auth)
 
@@ -107,7 +111,7 @@ func main() {
 	defer db.Close()
 	SetORDB(db)
 
-	//util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, secMode)
+	util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, config.Server_ssl_enabled)
 
 	// register all services
 	util.RegisterService("orchestrator", config.Server_address, config.Server_port, "orchestration-service", "/orchestrator/orchestration", 1, []string{"HTTP-INSECURE-JSON"})
@@ -116,6 +120,12 @@ func main() {
 
 	if config.Server_ssl_enabled {
 		log.Printf("\nStarting HTTPS server\n")
+
+		authenticationInfo, err = util.SetAuthenticationInfo(config.Server_ssl_key_store)
+		if err != nil {
+			fmt.Println("Could not load system certificte public key!")
+			return
+		}
 
 		// Create a CA certificate pool and add cert.pem to it
 		caCert, err := ioutil.ReadFile(config.Server_ssl_trust_store)

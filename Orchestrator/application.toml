@@ -10,7 +10,7 @@ Datasource_database="arrowhead"
 
 
 # Orchestrator web-server parameters
-Server_address="192.168.11.22"
+Server_address="192.168.11.19"
 Server_port=8441
 
 ############################################
@@ -24,8 +24,8 @@ Core_system_name="orchestrator"
 Log_all_request_and_response=false
 
 # Service Registry web-server parameters (to register the Orchestrator's services)
-sr_address="192.168.11.22"
-sr_port=8443
+Sr_address="127.0.0.1"
+Sr_port=8443
 
 ############################################
 ###           SECURE MODE                ###
@@ -34,13 +34,13 @@ sr_port=8443
 # configure secure mode
 
 # Set this to false to disable https mode
-server_ssl_enabled=false
+Server_ssl_enabled=true
 
 
 Server_ssl_key_store="certificates/orchestrator.pem"
 Server_ssl_key_store_file="certificates/orchestrator.key"
 Server_ssl_client_auth="none" #"need"
-Server_ssl_trust_store="certificates/ca.pem"
+Server_ssl_trust_store="../certificates/testcloud2/testcloud2.pem"
 #Server_ssl_trust_store_password="123456"
 
 #Disable_hostname_verifier=false
