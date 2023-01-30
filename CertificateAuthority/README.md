@@ -14,7 +14,7 @@ Status: 100% implemented
 #### Check certificate validity
 Returns whether the given certificate is valid or has been revoked. The client SHALL not trust a revoked certificate.
 
-Status: 10% implemented
+Status: 30% implemented
 
 ### Private endpoints
 
