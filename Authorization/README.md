@@ -1,5 +1,5 @@
 # Eclipse Arrowhead Serviceregistry in Go
-This is a an Arrowhead Authorization system written in Go.
+This is an Arrowhead Authorization system written in Go.
 
 
 ## Endpoints

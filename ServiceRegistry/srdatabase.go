@@ -113,7 +113,7 @@ func GetSRDB() *sql.DB {
 //
 //
 func getInterfacesForService(db *sql.DB, serviceID int64) ([]dto.ServiceInterfaceResponseDTO, error) {
-	//fmt.Printf("getInterfacesForService(%v)\n", serviceID)
+	fmt.Printf("getInterfacesForService(%v)\n", serviceID)
 	ret := make([]dto.ServiceInterfaceResponseDTO, 0)
 
 	results, err := db.Query("SELECT DISTINCT si.id, si.interface_name, UNIX_TIMESTAMP(si.created_at), UNIX_TIMESTAMP(si.updated_at) FROM service_interface si, service_registry_interface_connection sric WHERE si.id=sric.interface_id AND sric.service_registry_id=?", serviceID)
@@ -128,12 +128,14 @@ func getInterfacesForService(db *sql.DB, serviceID int64) ([]dto.ServiceInterfac
 		var created_at, updated_at string
 		err = results.Scan(&interfaceEntry.Id, &interfaceEntry.InterfaceName, &created_at, &updated_at)
 		if err != nil {
+			fmt.Println(err)
 			//panic(err.Error()) // proper error handling instead of panic in your app
 			continue
 		} else {
 			interfaceEntry.CreatedAt = timestamp2Arrowhead(created_at)
 			interfaceEntry.UpdatedAt = timestamp2Arrowhead(updated_at)
 			//fmt.Println("\tInterface name: ", interfaceEntry.InterfaceName)
+			fmt.Printf("%+v\n", interfaceEntry)
 			ret = append(ret, interfaceEntry)
 		}
 	}
@@ -379,7 +381,8 @@ func getServiceDefinitionFromName(db *sql.DB, serviceDefinition string) (dto.Ser
 func queryServicesForName(db *sql.DB, request ServiceQueryForm, unfilteredHits *int) ([]dto.ServiceRegistryResponseDTO, error) {
 	returnList := []dto.ServiceRegistryResponseDTO{}
 	var serviceType string = request.ServiceDefinitionRequirement
-	//log.Printf("\nqueryServicesForName('%s')\n", serviceType)
+	fmt.Printf("queryServicesForName('%s')\n", serviceType)
+	*unfilteredHits = 0
 
 	result, err := db.Query("SELECT id, service_definition, UNIX_TIMESTAMP(created_at), UNIX_TIMESTAMP(updated_at) FROM service_definition WHERE service_definition=? LIMIT 1", serviceType)
 	if err != nil {
@@ -388,7 +391,7 @@ func queryServicesForName(db *sql.DB, request ServiceQueryForm, unfilteredHits *
 	defer result.Close()
 
 	if !result.Next() {
-		//log.Printf("No data...")
+		fmt.Printf("No data...")
 		return returnList, nil
 	}
 
@@ -398,20 +401,20 @@ func queryServicesForName(db *sql.DB, request ServiceQueryForm, unfilteredHits *
 
 	err = result.Scan(&id, &service_definition, &created_at, &updated_at)
 	if err != nil {
-		//log.Printf("Scan went wrong!\n")
+		log.Printf("Scan went wrong!\n")
 		log.Println(err)
 		return returnList, err
 	}
-	//log.Printf("id: %d, service_definition: '%s', created_at: '%s', updated_at: '%s'\n", id, service_definition, created_at, updated_at)
+	fmt.Printf("id: %d, service_definition: '%s', created_at: '%s', updated_at: '%s'\n", id, service_definition, created_at, updated_at)
 
 	var serviceDef dto.ServiceDefinitionResponseDTO
 	serviceDef.Id = id
 	serviceDef.ServiceDefinition = service_definition
 	serviceDef.CreatedAt = timestamp2Arrowhead(created_at)
 	serviceDef.UpdatedAt = timestamp2Arrowhead(updated_at)
-	//fmt.Printf("serviceDef:\n%v\n", serviceDef)
+	fmt.Printf("serviceDef:\n%v\n", serviceDef)
 
-	results, err2 := db.Query("SELECT id, system_id, service_uri, end_of_validity, secure, metadata, version, UNIX_TIMESTAMP(created_at), UNIX_TIMESTAMP(updated_at) FROM service_registry WHERE service_id = ?", id)
+	results, err2 := db.Query("SELECT id, system_id, service_uri, end_of_validity, secure, metadata, version, UNIX_TIMESTAMP(created_at), UNIX_TIMESTAMP(updated_at) FROM service_registry WHERE service_id=?", id)
 	if err2 != nil {
 		log.Println(err2)
 		return returnList, err2
@@ -434,7 +437,7 @@ func queryServicesForName(db *sql.DB, request ServiceQueryForm, unfilteredHits *
 		entry.CreatedAt = timestamp2Arrowhead(created_at)
 		entry.UpdatedAt = timestamp2Arrowhead(updated_at)
 
-		//fmt.Printf("entry:\n%+v\n", entry)
+		fmt.Printf("entry:\n%+v\n", entry)
 		//fmt.Printf("len(%d)\n", len(request.SecurityRequirements))
 
 		if len(request.SecurityRequirements) >= 1 {
@@ -500,7 +503,7 @@ func queryServicesForName(db *sql.DB, request ServiceQueryForm, unfilteredHits *
 			// add filter for serviceRequirements, and only add if match!
 			var tmpInterfaces = make([]dto.ServiceInterfaceResponseDTO, 0)
 			var validInterfaceFound bool = true
-			if len(request.InterfaceRequirements) >= 1 {
+			if len(request.InterfaceRequirements) > 0 {
 				validInterfaceFound = false
 			}
 
@@ -511,10 +514,13 @@ func queryServicesForName(db *sql.DB, request ServiceQueryForm, unfilteredHits *
 					if v.InterfaceName == rv {
 						tmpInterfaces = append(tmpInterfaces, entry.Interfaces[k])
 						validInterfaceFound = true
+						*unfilteredHits += 1
 					}
 				}
 			}
-			entry.Interfaces = tmpInterfaces
+			if len(request.InterfaceRequirements) > 0 {
+				entry.Interfaces = tmpInterfaces
+			}
 			if validInterfaceFound {
 				returnList = append(returnList, entry)
 			}
@@ -531,7 +537,7 @@ func registerServiceForSystem(db *sql.DB, serviceRegReq dto.ServiceRegistryEntry
 	var ret dto.ServiceRegistryResponseDTO
 	var err error
 
-	fmt.Printf("\nregisterServiceForSystem('%s', '%s')\n", serviceRegReq.ServiceDefinition, serviceRegReq.ProviderSystem.SystemName)
+	//fmt.Printf("\nregisterServiceForSystem('%s', '%s')\n", serviceRegReq.ServiceDefinition, serviceRegReq.ProviderSystem.SystemName)
 
 	// check that a provider system exist
 	systemId := checkProvider(db, serviceRegReq.ProviderSystem.SystemName)
@@ -551,7 +557,7 @@ func registerServiceForSystem(db *sql.DB, serviceRegReq dto.ServiceRegistryEntry
 	if err != nil {
 		return ret, errors.New("Could not save new serviceDefinition type!")
 	}
-	fmt.Printf("\tUsing serviceDefinitionID: %d\n", serviceDefId)
+	//fmt.Printf("\tUsing serviceDefinitionID: %d\n", serviceDefId)
 
 	// register the service
 	serviceId, err := insertServiceEntry(db, serviceRegReq, systemId, serviceDefId)
@@ -559,7 +565,7 @@ func registerServiceForSystem(db *sql.DB, serviceRegReq dto.ServiceRegistryEntry
 		log.Printf("%s:%d -> %v\n", "srdatabase.go", 542, err)
 		return ret, err
 	}
-	fmt.Printf("Got service.ID=%d\n", serviceId)
+	//fmt.Printf("Got service.ID=%d\n", serviceId)
 
 	service, _ := fetchServiceById(db, serviceId)
 
@@ -686,13 +692,13 @@ func insertServiceEntry(db *sql.DB, request dto.ServiceRegistryEntryDTO, systemI
 	endofValidityPtr := NewNullString(request.EndOfValidity)
 	insertRes, err := db.Exec("INSERT INTO service_registry(service_id, system_id, service_uri, end_of_validity, secure, version) VALUES(?,?,?,?,?,?)", serviceDefId, systemId, request.ServiceUri, endofValidityPtr, request.Secure, request.Version) //metadata must be converted to JSON
 	if err != nil {
-		fmt.Printf("%s:%d->%v\n", "srdatabase.go", 671, err.Error())
+		//fmt.Printf("%s:%d->%v\n", "srdatabase.go", 671, err.Error())
 		return -1, err
 	}
 
 	id, err = insertRes.LastInsertId()
 	if err != nil {
-		fmt.Printf("%s:%d->%v\n", "srdatabase.go", 677, err.Error())
+		//fmt.Printf("%s:%d->%v\n", "srdatabase.go", 677, err.Error())
 		return -1, err
 	}
 
@@ -1340,6 +1346,7 @@ func getAllServicesFromServiceDefinition(db *sql.DB, serviceDefinition string, p
 
 	results, err := db.Query("SELECT id, service_id, system_id, service_uri, end_of_validity, secure, version, created_at, updated_at FROM service_registry WHERE service_id=?", serviceDefId)
 	if err != nil {
+		fmt.Println(err)
 		return services, err
 	}
 	defer results.Close()
@@ -1361,9 +1368,11 @@ func getAllServicesFromServiceDefinition(db *sql.DB, serviceDefinition string, p
 		entry.CreatedAt = timestamp2Arrowhead(created_at)
 		entry.UpdatedAt = timestamp2Arrowhead(updated_at)
 
+		fmt.Printf("ENTRY: %+v\n", entry)
 		services = append(services, entry)
 	}
 
+	fmt.Printf("SERVICES: %+v\n", services)
 	return services, nil
 }
 

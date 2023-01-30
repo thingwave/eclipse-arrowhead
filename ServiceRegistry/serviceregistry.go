@@ -32,6 +32,7 @@ import (
 
 	db "arrowhead.eu/common/database"
 	dto "arrowhead.eu/common/datamodels"
+	"arrowhead.eu/common/util"
 )
 
 type tomlConfig struct {
@@ -56,6 +57,7 @@ type tomlConfig struct {
 
 var config tomlConfig
 var mySystemId int64
+var authenticationInfo string = ""
 
 func timer() {
 	for {
@@ -153,6 +155,12 @@ func main() {
 
 	if config.Server_ssl_enabled {
 		log.Printf("Starting HTTPS server\n")
+
+		authenticationInfo, err = util.SetAuthenticationInfo(config.Server_ssl_key_store)
+		if err != nil {
+			fmt.Println("Could not load system certificte public key!")
+			return
+		}
 
 		// Create a CA certificate pool and add cert.pem to it
 		caCert, err := ioutil.ReadFile(config.Server_ssl_trust_store)

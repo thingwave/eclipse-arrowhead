@@ -20,3 +20,6 @@ Start store Orchestration by ID
 
 Status 0% implemented
 
+## Bugs
+1. Hard coded serviceregistry IP and port in util tool!
+2. Missing support for HTTPS in util tool!

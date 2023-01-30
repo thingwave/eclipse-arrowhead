@@ -61,6 +61,7 @@ var config tomlConfig
 //var mySystemId int64
 
 var publicKey string = ""
+var authenticationInfo string = ""
 
 func getCert() string {
 	return publicKey
@@ -75,7 +76,6 @@ func Timer() {
 	}
 }
 
-//
 func SetupCloseHandler() {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
@@ -158,14 +158,19 @@ func main() {
 	/*var secMode int = 0
 	if config.Server_ssl_enabled {
 		secMode = 1
-	}
-	util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, secMode)*/
+	}*/
+	util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, config.Server_ssl_enabled)
 
 	//util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "authorization-control-intra", "/authorization/intracloud/check")
 	//util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "auth-public-key", "/authorization/publickey")
 
 	interfaces := make([]string, 1)
 	if config.Server_ssl_enabled {
+		authenticationInfo, err = util.SetAuthenticationInfo(config.Server_ssl_key_store)
+		if err != nil {
+			fmt.Println("Could not load system certificte public key!")
+			return
+		}
 		interfaces[0] = "HTTP-SECURE-JSON"
 	} else {
 		interfaces[0] = "HTTP-INSECURE-JSON"
