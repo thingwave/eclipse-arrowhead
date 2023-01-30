@@ -81,7 +81,7 @@ func GetSRDB() *sql.DB {
 
 // /////////////////////////////////////////////////////////////////////////////
 func getInterfacesForService(db *sql.DB, serviceID int64) ([]dto.ServiceInterfaceResponseDTO, error) {
-	fmt.Printf("getInterfacesForService(%v)\n", serviceID)
+	//fmt.Printf("getInterfacesForService(%v)\n", serviceID)
 	ret := make([]dto.ServiceInterfaceResponseDTO, 0)
 
 	results, err := db.Query("SELECT DISTINCT si.id, si.interface_name, UNIX_TIMESTAMP(si.created_at), UNIX_TIMESTAMP(si.updated_at) FROM service_interface si, service_registry_interface_connection sric WHERE si.id=sric.interface_id AND sric.service_registry_id=?", serviceID)
@@ -642,7 +642,7 @@ func insertServiceEntry(db *sql.DB, request dto.ServiceRegistryEntryDTO, systemI
 		return id, errors.New("ServiceEntry already exists!")
 	}
 
-	fmt.Printf("No matching service ID found, must insert...\n")
+	//fmt.Printf("No matching service ID found, must insert...\n")
 
 	/*endofValidityPtr := &request.EndOfValidity
 	if request.EndOfValidity == "" {
@@ -693,12 +693,12 @@ func checkProvider(db *sql.DB, systemName string) int64 {
 }
 
 func updateProvider(db *sql.DB, system dto.SystemRequestDTO, systemId int64) error {
-	var systemName string = system.SystemName
+	//var systemName string = system.SystemName
 	var address string = system.Address
 	var port int = system.Port
 	//var authenticationInfo = newNullString(system.AuthenticationInfo)
 
-	fmt.Printf("updateProvider('%s', '%s', %d):\n", systemName, address, port)
+	//fmt.Printf("updateProvider('%s', '%s', %d):\n", systemName, address, port)
 
 	_, err := db.Exec("UPDATE system_ (address, port, updated_at) VALUES(?, ?, NOW()) WHERE id=?", address, port, systemId) //XX metadata is NULL?
 	if err != nil {

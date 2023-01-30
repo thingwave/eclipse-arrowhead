@@ -6,12 +6,12 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
-  "time"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
-  "strconv"
+	"time"
 
 	dto "arrowhead.eu/common/datamodels"
 )
@@ -84,7 +84,7 @@ func RegisterService(systemname string, address string, port int, service_defini
 	if err != nil {
 		return false, err
 	}
-	fmt.Printf("%s\n", string(jsonReq))
+	//fmt.Printf("%s\n", string(jsonReq))
 
 	srUrl := fmt.Sprintf("%s://%s:%d/serviceregistry/register", mode, srAddress, srPort)
 	request, error := http.NewRequest("POST", srUrl, bytes.NewBuffer(jsonReq))
@@ -155,26 +155,23 @@ func UnregisterService(systemname string, address string, port int, service_defi
 }
 
 func SetAuthenticationInfo(fileName string) (string, error) {
-	fmt.Printf("PEM2AuthenticationInfo(%s)\n", fileName)
+	//log.Printf("SetAuthenticationInfo(%s)\n", fileName)
 
-	bytes, err := ioutil.ReadFile("../certificates/testcloud2/testcloud2.pem")
+	bytes, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		return "", err
 	}
 
 	cert := string(bytes)
-	//fmt.Printf("###\n%s\n###\n", cert)
 	end1 := strings.Index(cert, "-----END CERTIFICATE-----")
 	cert = cert[0:end1]
 	cert = strings.Replace(cert, "-----BEGIN CERTIFICATE-----", "", 1)
 	cert = strings.Replace(cert, "-----END CERTIFICATE-----", "", 1)
 	cert = strings.ReplaceAll(cert, "\n", "")
 
-	//fmt.Printf("###\n%s\n###\n", cert)
 	systemAuthenticationInfo = cert
 	return cert, nil
 }
-
 
 func Timestamp2Arrowhead(ts string) string {
 	//fmt.Printf("timestamp2Arrowhead(%s)\n", ts)
