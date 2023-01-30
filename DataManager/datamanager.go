@@ -64,6 +64,7 @@ type tomlConfig struct {
 var config tomlConfig
 
 var t = 0
+var authenticationInfo string = ""
 
 //var port = 4461;
 
@@ -82,8 +83,6 @@ func Timer() {
 	}
 }
 
-//
-//
 func SetupCloseHandler() {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
@@ -187,13 +186,19 @@ func main() {
 	if config.Server_ssl_enabled {
 		secMode = 1
 	}
-	util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, secMode)*/
+	*/
+	util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, config.Server_ssl_enabled)
 
 	//util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "historian", "/datamanager/historian")
 	//util.UnregisterService(config.Core_system_name, config.Server_address, config.Server_port, "proxy", "/datamanager/proxy")
 
 	interfaces := make([]string, 1)
 	if config.Server_ssl_enabled {
+		authenticationInfo, err = util.SetAuthenticationInfo(config.Server_ssl_key_store)
+		if err != nil {
+			fmt.Println("Could not load system certificte public key!")
+			return
+		}
 		interfaces[0] = "HTTP-SECURE-JSON"
 	} else {
 		interfaces[0] = "HTTP-INSECURE-JSON"
