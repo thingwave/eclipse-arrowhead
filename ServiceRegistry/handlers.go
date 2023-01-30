@@ -80,7 +80,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, base64.StdEncoding.EncodeToString(retJsonHdr)+"."+base64.StdEncoding.EncodeToString(retJsonPayload)+".")
 }
 
-/// Arrowhead services ////////////////////////////////////////////
+// / Arrowhead services ////////////////////////////////////////////
 func Echo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
 	fmt.Fprint(w, "Got it!")
@@ -122,7 +122,6 @@ func Query(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		//fmt.Printf("################################\nQuery():\n %+v\n################################\n", queryReq)
 		var unfilteredHits int = 0
 		ret.ServiceQueryData, _ = queryServicesForName(GetSRDB(), queryReq, &unfilteredHits) //XX BUG HERE SOMEWHERE
 		ret.UnfilteredHits = unfilteredHits
@@ -1104,8 +1103,7 @@ func HandleService(w http.ResponseWriter, r *http.Request) {
 }
 */
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func HandleAllSystems(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("HandleAllSystems()")
 
@@ -1192,12 +1190,11 @@ func HandleAllSystems(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 type metadata struct {
 	Metadata map[string]string `json:"metadata"`
 }
 
-//
 func HandleSystemById(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)

@@ -21,8 +21,6 @@ import (
 	"strconv"
 	"time"
 
-	//"strings"
-	//"strconv"
 	"database/sql"
 	"encoding/json"
 
@@ -32,17 +30,17 @@ import (
 )
 
 /*
-type Provider struct {
-	ID int `json:"id"`
-	//    System_id int `json:"system_id"`
-	SystemName string `json:"systemName"`
-	Address    string `json:"address"`
-	//    Service_IP string `json:"service_ip"`
-	Port       int    `json:"port"`
-	CreatedAt  string `json:"createdAt"`
-	UpdatedAt  string `json:"updatedAt"`
-	ServiceUri string
-}
+	type Provider struct {
+		ID int `json:"id"`
+		//    System_id int `json:"system_id"`
+		SystemName string `json:"systemName"`
+		Address    string `json:"address"`
+		//    Service_IP string `json:"service_ip"`
+		Port       int    `json:"port"`
+		CreatedAt  string `json:"createdAt"`
+		UpdatedAt  string `json:"updatedAt"`
+		ServiceUri string
+	}
 */
 type ServiceInterface struct {
 	ID             int    `json:"id"`
@@ -73,34 +71,6 @@ var srdb *sql.DB = nil
 	return false
 }*/
 
-///////////////////////////////////////////////////////////////////////////////
-//
-//
-/*func OpenDatabase(address string, port int, username string, password string, dbname string) (*sql.DB, error) {
-
-	// Open up our database connection. XXX fix login parameters
-	db, err := sql.Open("mysql", username+":"+password+"@tcp("+address+":3306)/"+dbname+"?parseTime=true")
-
-	// if there is an error opening the connection, handle it
-	if err != nil {
-		fmt.Println("Could not connect to MySQL database")
-		return nil, err
-	}
-
-	err = db.Ping()
-	if err != nil {
-		fmt.Println("Could not connect to MySQL database")
-		db.Close()
-		return nil, err
-	}
-
-	srdb = db
-	return db, nil
-}
-*/
-///////////////////////////////////////////////////////////////////////////////
-//
-//
 func SetSRDB(db *sql.DB) {
 	srdb = db
 }
@@ -109,9 +79,7 @@ func GetSRDB() *sql.DB {
 	return srdb
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
-//
+// /////////////////////////////////////////////////////////////////////////////
 func getInterfacesForService(db *sql.DB, serviceID int64) ([]dto.ServiceInterfaceResponseDTO, error) {
 	fmt.Printf("getInterfacesForService(%v)\n", serviceID)
 	ret := make([]dto.ServiceInterfaceResponseDTO, 0)
@@ -258,9 +226,7 @@ func addInterfaceByName(db *sql.DB, interfaceName string) (dto.ServiceInterfaceR
 	return getInterfaceByName(db, interfaceName)
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
-//
+// /////////////////////////////////////////////////////////////////////////////
 func getAllServicesBySystem(db *sql.DB, systemID int64) ([]dto.ServiceRegistryResponseDTO, error) {
 	//fmt.Printf("getAllServicesBySystem(%v)\n", systemID)
 
@@ -302,9 +268,7 @@ func getAllServicesBySystem(db *sql.DB, systemID int64) ([]dto.ServiceRegistryRe
 	return ret, nil
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
-//
+// /////////////////////////////////////////////////////////////////////////////
 func getServiceDefinitionForService(db *sql.DB, serviceID int64) (dto.ServiceDefinitionResponseDTO, error) {
 	//fmt.Printf("getServiceDefinitionForService(%v)\n", serviceID)
 
@@ -375,9 +339,7 @@ func getServiceDefinitionFromName(db *sql.DB, serviceDefinition string) (dto.Ser
 	return ret, errors.New("No data")
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
-//
+// /////////////////////////////////////////////////////////////////////////////
 func queryServicesForName(db *sql.DB, request ServiceQueryForm, unfilteredHits *int) ([]dto.ServiceRegistryResponseDTO, error) {
 	returnList := []dto.ServiceRegistryResponseDTO{}
 	var serviceType string = request.ServiceDefinitionRequirement
@@ -530,9 +492,7 @@ func queryServicesForName(db *sql.DB, request ServiceQueryForm, unfilteredHits *
 	return returnList, nil
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
-//
+// /////////////////////////////////////////////////////////////////////////////
 func registerServiceForSystem(db *sql.DB, serviceRegReq dto.ServiceRegistryEntryDTO) (dto.ServiceRegistryResponseDTO, error) {
 	var ret dto.ServiceRegistryResponseDTO
 	var err error
@@ -586,22 +546,22 @@ func registerServiceForSystem(db *sql.DB, serviceRegReq dto.ServiceRegistryEntry
 }
 
 /*
-func insertOrUpdateServiceDefinition(db *sql.DB, serviceDefinition string) (int64, error) {
-	log.Printf("insertOrUpdateServiceDefinition('%s')\n", serviceDefinition)
+	func insertOrUpdateServiceDefinition(db *sql.DB, serviceDefinition string) (int64, error) {
+		log.Printf("insertOrUpdateServiceDefinition('%s')\n", serviceDefinition)
 
-	result, err := db.Exec("INSERT IGNORE INTO service_definition(service_definition) VALUES(?) ON DUPLICATE KEY UPDATE updated_at=NOW()", serviceDefinition)
-	if err != nil {
-		return -1, err
-	}
-	insertID, err := result.LastInsertId()
-	if err != nil {
-		log.Println(err)
-		return -1, err
-	}
-	log.Printf("\tserviceDefinitionID: %v\n", insertID)
+		result, err := db.Exec("INSERT IGNORE INTO service_definition(service_definition) VALUES(?) ON DUPLICATE KEY UPDATE updated_at=NOW()", serviceDefinition)
+		if err != nil {
+			return -1, err
+		}
+		insertID, err := result.LastInsertId()
+		if err != nil {
+			log.Println(err)
+			return -1, err
+		}
+		log.Printf("\tserviceDefinitionID: %v\n", insertID)
 
-	return int64(insertID), nil
-}
+		return int64(insertID), nil
+	}
 */
 func insertOrUpdateServiceInterface(db *sql.DB, serviceInterface string) (int64, error) {
 	//log.Printf("insertOrUpdateServiceInterface('%s')\n", serviceInterface)
@@ -663,7 +623,6 @@ func updateServiceEntry(db *sql.DB, request dto.ServiceRegistryEntryDTO, Service
 	return true, nil
 }
 
-//
 func insertServiceEntry(db *sql.DB, request dto.ServiceRegistryEntryDTO, systemId int64, serviceDefId int64) (int64, error) {
 	var id int64 = -1
 	//var retId int64 = -1
@@ -712,8 +671,7 @@ func insertServiceEntry(db *sql.DB, request dto.ServiceRegistryEntryDTO, systemI
 	return id, nil
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func checkProvider(db *sql.DB, systemName string) int64 {
 	var id int = -1
 
@@ -807,8 +765,7 @@ func getProvider(db *sql.DB, systemID int) (SystemResponseDTO, error) {
 }
 */
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func insertOrUpdateServiceDefinition(db *sql.DB, serviceDefiniton string) (int64, error) {
 
 	var id int = -1
@@ -832,8 +789,7 @@ func insertOrUpdateServiceDefinition(db *sql.DB, serviceDefiniton string) (int64
 	return int64(id), err
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func getAllServiceDefinitions(db *sql.DB) ([]dto.ServiceDefinitionResponseDTO, error) {
 	var ret []dto.ServiceDefinitionResponseDTO = make([]dto.ServiceDefinitionResponseDTO, 0)
 	result, err := db.Query("SELECT id, service_definition, UNIX_TIMESTAMP(created_at), UNIX_TIMESTAMP(updated_at) FROM service_definition")
@@ -855,8 +811,7 @@ func getAllServiceDefinitions(db *sql.DB) ([]dto.ServiceDefinitionResponseDTO, e
 	return ret, nil
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func addOrUpdateSystem(db *sql.DB, system dto.SystemRequestDTO) (int64, error) {
 	var systemName string = system.SystemName
 	var address string = system.Address
@@ -888,8 +843,7 @@ func newNullString(s string) sql.NullString {
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func getIDforSystem(db *sql.DB, systemName string, address string, port int) int64 {
 	result, err := db.Query("SELECT id FROM system_ WHERE system_name=? AND address=? AND port=? LIMIT 1", systemName, address, port)
 	if err != nil {
@@ -909,8 +863,7 @@ func getIDforSystem(db *sql.DB, systemName string, address string, port int) int
 	return id
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func getIDforServiceDefinition(db *sql.DB, serviceDefinition string) int64 {
 	result, err := db.Query("SELECT id FROM service_definition WHERE service_definition=? LIMIT 1", serviceDefinition)
 	if err != nil {
@@ -932,8 +885,7 @@ func getIDforServiceDefinition(db *sql.DB, serviceDefinition string) int64 {
 	return id
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func registerSystem(db *sql.DB, system dto.SystemRequestDTO) (dto.SystemResponseDTO, error) {
 	var ret dto.SystemResponseDTO
 
@@ -950,8 +902,7 @@ func registerSystem(db *sql.DB, system dto.SystemRequestDTO) (dto.SystemResponse
 	return ret, err
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func getSystem(db *sql.DB, systemId int64) (dto.SystemResponseDTO, error) {
 	var ret dto.SystemResponseDTO
 
@@ -987,8 +938,7 @@ func getSystem(db *sql.DB, systemId int64) (dto.SystemResponseDTO, error) {
 	return ret, err
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func replaceSystem(db *sql.DB, id int64, system dto.SystemRequestDTO) (dto.SystemResponseDTO, error) {
 	ret, err := getSystem(db, id)
 
@@ -1023,8 +973,7 @@ func replaceSystem(db *sql.DB, id int64, system dto.SystemRequestDTO) (dto.Syste
 	return ret, err
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func modifySystem(db *sql.DB, id int64, system dto.SystemRequestDTO) (dto.SystemResponseDTO, error) {
 	var ret dto.SystemResponseDTO
 	//  var err
@@ -1077,8 +1026,7 @@ func modifySystem(db *sql.DB, id int64, system dto.SystemRequestDTO) (dto.System
 	return ret, err
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func deleteSystem(db *sql.DB, id int64) error {
 
 	_, err := db.Exec("DELETE FROM system_ WHERE id = ?", id)
@@ -1087,8 +1035,7 @@ func deleteSystem(db *sql.DB, id int64) error {
 	return err
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func getAllSystems(db *sql.DB, direction string) ([]dto.SystemResponseDTO, error) {
 	var response []dto.SystemResponseDTO = make([]dto.SystemResponseDTO, 0)
 
@@ -1149,8 +1096,7 @@ func getAllServiceDefinitionsSimple(db *sql.DB) ([]dto.ServiceDTO, error) {
 	return ret, nil
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func unregisterServiceForSystem(db *sql.DB, service_definition string, system_name string, address string, port int) (bool, error) {
 	//log.Printf("unregisterServiceForSystem\n")
 
@@ -1172,8 +1118,7 @@ func unregisterServiceForSystem(db *sql.DB, service_definition string, system_na
 	return true, nil
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func unregisterSystem(db *sql.DB, system_name string, address string, port int) (bool, error) {
 	//log.Printf("unregisterSystem\n")
 
@@ -1192,8 +1137,7 @@ func unregisterSystem(db *sql.DB, system_name string, address string, port int) 
 	return true, nil
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func fetchAllSystems(db *sql.DB, page int, items_per_page int) []dto.SystemResponseDTO {
 	var response = []dto.SystemResponseDTO{}
 
@@ -1226,8 +1170,7 @@ func fetchAllSystems(db *sql.DB, page int, items_per_page int) []dto.SystemRespo
 	return response
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func fetchServiceById(db *sql.DB, serviceId int64) (dto.ServiceRegistryEntryDTO, error) {
 	var ret dto.ServiceRegistryEntryDTO
 
@@ -1396,8 +1339,7 @@ func addSystem(db *sql.DB, system dto.SystemRequestDTO) (int64, error) {
 	return int64(lid), err
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func addServiceDefinition(db *sql.DB, definition string) (int64, error) {
 	stmt, err := db.Prepare("INSERT INTO service_definition(service_definition) VALUES(?) ON DUPLICATE KEY UPDATE updated_at=NOW()")
 	if err != nil {

@@ -75,12 +75,6 @@ var clientRoutes = Routes{
 
 // Private endpoints - /serviceregistry/ + <Route below>
 var privateRoutes = Routes{
-	/*Route{
-		"Query",
-		[]string{"POST"},
-		"/",
-		PrivQuery,
-	},*/
 	Route{
 		"PullSystems",
 		[]string{"GET"},
