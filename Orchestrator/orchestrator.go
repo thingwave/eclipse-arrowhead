@@ -114,7 +114,18 @@ func main() {
 	util.SetConfig(config.Core_system_name, config.Server_address, config.Server_port, config.Sr_address, config.Sr_port, config.Server_ssl_enabled)
 
 	// register all services
-	util.RegisterService("orchestrator", config.Server_address, config.Server_port, "orchestration-service", "/orchestrator/orchestration", 1, []string{"HTTP-INSECURE-JSON"})
+	interfaces := make([]string, 1)
+	if config.Server_ssl_enabled {
+		authenticationInfo, err = util.SetAuthenticationInfo(config.Server_ssl_key_store)
+		if err != nil {
+			fmt.Println("Could not load system certificte public key!")
+			return
+		}
+		interfaces[0] = "HTTP-SECURE-JSON"
+	} else {
+		interfaces[0] = "HTTP-INSECURE-JSON"
+	}
+	util.RegisterService("orchestrator", config.Server_address, config.Server_port, "orchestration-service", "/orchestrator/orchestration", 1, interfaces)
 
 	router := NewRouter(config.Server_ssl_enabled)
 
