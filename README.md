@@ -28,9 +28,6 @@ Below is a list if some of the planned features:
 
 # Status:
 
-## ArrowheadClient
-Basic HTTPS client with JSON support. Must add support for Serviceregistry and Orchestration
-
 ## ServiceRegistry
 Implements most features.
 
