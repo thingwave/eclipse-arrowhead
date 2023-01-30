@@ -1311,11 +1311,11 @@ func getAllServicesFromServiceDefinition(db *sql.DB, serviceDefinition string, p
 		entry.CreatedAt = timestamp2Arrowhead(created_at)
 		entry.UpdatedAt = timestamp2Arrowhead(updated_at)
 
-		fmt.Printf("ENTRY: %+v\n", entry)
+		//fmt.Printf("ENTRY: %+v\n", entry)
 		services = append(services, entry)
 	}
 
-	fmt.Printf("SERVICES: %+v\n", services)
+	//fmt.Printf("SERVICES: %+v\n", services)
 	return services, nil
 }
 

@@ -564,7 +564,6 @@ func HandleEntriesId(w http.ResponseWriter, r *http.Request) {
 	}
 	serviceId := int64(serviceId32)
 	fmt.Printf("HandleEntriesId(%d)\n", serviceId)
-	//fmt.Printf("Service ID: %d\n", serviceId)
 
 	switch r.Method {
 	case http.MethodGet:
@@ -589,9 +588,9 @@ func HandleEntriesId(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		fmt.Printf("%s\n", string(body))
+		//fmt.Printf("%s\n", string(body))
 		err = json.Unmarshal(body, &system)
-		fmt.Printf("\tMGT::REG-REQ: %+v\n", system)
+		//fmt.Printf("\tMGT::REG-REQ: %+v\n", system)
 
 		// convert incomplete to dto
 		if system.ServiceDefinition != "" {
@@ -642,8 +641,8 @@ func HandleEntriesId(w http.ResponseWriter, r *http.Request) {
 
 		//fmt.Printf("%s\n", string(body))
 		err = json.Unmarshal(body, &system)
-		fmt.Printf("\tMGT::REG-REQ: %+v\n", system)
-		fmt.Printf("\tMGT::REG-CUR: %+v\n", request)
+		//fmt.Printf("\tMGT::REG-REQ: %+v\n", system)
+		//fmt.Printf("\tMGT::REG-CUR: %+v\n", request)
 
 		// convert incomplete to dto
 		if system.ServiceDefinition != "" {
@@ -672,8 +671,8 @@ func HandleEntriesId(w http.ResponseWriter, r *http.Request) {
 		}
 
 		ok, err := updateServiceEntry(GetSRDB(), request, serviceId)
-		fmt.Printf("ok: %v\n", ok)
-		fmt.Println(err)
+		//fmt.Printf("ok: %v\n", ok)
+		//fmt.Println(err)
 		if ok == false || err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -920,7 +919,7 @@ func HandleEntriesByServiceDefinition(w http.ResponseWriter, r *http.Request) { 
 		items_per_pageP = &items_per_page
 	}
 
-	fmt.Printf("HandleEntriesByServiceDefinition('%s')\n", serviceDefinition)
+	//fmt.Printf("HandleEntriesByServiceDefinition('%s')\n", serviceDefinition)
 	if len(serviceDefinition) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		return
