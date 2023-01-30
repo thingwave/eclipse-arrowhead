@@ -8,7 +8,10 @@ replace arrowhead.eu/common/auth => ../common/auth
 
 replace arrowhead.eu/common/database => ../common/database
 
+replace arrowhead.eu/common/util => ../common/util
+
 require (
+  arrowhead.eu/common/util v0.0.0-00010101000000-000000000000
 	arrowhead.eu/common/auth v0.0.0-00010101000000-000000000000
 	arrowhead.eu/common/database v0.0.0-00010101000000-000000000000
 	arrowhead.eu/common/datamodels v0.0.0-00010101000000-000000000000
