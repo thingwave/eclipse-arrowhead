@@ -10,7 +10,7 @@ Datasource_database="arrowhead"
 
 
 # Authorization web-server parameters
-Server_address="192.168.11.22"
+Server_address="127.0.0.1"
 Server_port=8445
 
 ############################################
@@ -21,7 +21,7 @@ Server_port=8445
 Core_system_name="authorization"
 
 # Service Registry web-server parameters (to register the Authorizarion's services)
-sr_address="192.168.11.22"
+sr_address="127.0.0.1"
 sr_port=8443
 
 ############################################
@@ -31,12 +31,12 @@ sr_port=8443
 # configure secure mode
 
 # Set this to false to disable https mode
-Server_ssl_enabled=false
+Server_ssl_enabled=true
 
 Server_ssl_key_store="certificates/authorization.pem"
 Server_ssl_key_store_file="certificates/authorization.key"
 Server_ssl_client_auth="need" #"none" #"need"
-Server_ssl_trust_store="certificates/ca.pem"
+Server_ssl_trust_store="../certificates/testcloud2/testcloud2.pem"
 #Server_ssl_trust_store_password="123456"
 
 #Disable_hostname_verifier=false
