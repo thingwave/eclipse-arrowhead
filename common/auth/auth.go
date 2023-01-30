@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"log"
+	//"log"
 	"errors"
 	"strings"
 	"net/http"
@@ -10,10 +10,10 @@ import (
 func AuthClientMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		log.Println("AuthClientMiddleware()")
+		//fmt.Println("AuthClientMiddleware()")
 		commonName, err := extractCNFromRequest(r)
-		if err == nil {
-			log.Printf("ClientCN: %s\n", commonName)
+		if err == nil && len(commonName) > 1 {
+			//log.Printf("ClientCN: %s\n", commonName)
 			next.ServeHTTP(w, r)
 		}
 	})
@@ -22,10 +22,10 @@ func AuthClientMiddleware(next http.Handler) http.Handler {
 func AuthManagementMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		log.Println("AuthManagementMiddleware()")
+		//fmt.Println("AuthManagementMiddleware()")
 		commonName, err := extractCNFromRequest(r)
 		if err == nil {
-			log.Printf("ClientCN: %s\n", commonName)
+			//fmt.Printf("ClientCN: %s\n", commonName)
 			if strings.HasPrefix(commonName, "sysop.") {
 				next.ServeHTTP(w, r)
 			}
@@ -36,10 +36,10 @@ func AuthManagementMiddleware(next http.Handler) http.Handler {
 func AuthPrivateMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		log.Println("AuthPrivateMiddleware()")
+		//log.Println("AuthPrivateMiddleware()")
 		commonName, err := extractCNFromRequest(r)
 		if err == nil {
-			log.Printf("ClientCN: %s\n", commonName)
+			//log.Printf("ClientCN: %s\n", commonName)
 			if strings.HasPrefix(commonName, "sysop.") || strings.HasPrefix(commonName, "orchestrator.") || strings.HasPrefix(commonName, "authorization.") {
 				next.ServeHTTP(w, r)
 			}
@@ -57,3 +57,4 @@ func extractCNFromRequest(r *http.Request) (string, error) {
 
 	return "", errors.New("Could not get CN")
 }
+

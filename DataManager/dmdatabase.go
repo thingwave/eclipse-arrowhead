@@ -5,45 +5,20 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"time"
 	"math"
+	"time"
 
-	//"strconv"
 	"database/sql"
 
-	_ "github.com/go-sql-driver/mysql"
 	dto "arrowhead.eu/common/datamodels"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var dmdb *sql.DB = nil
 
 const MAX_ALLOWED_TIME_DIFF = 1000
 
-///////////////////////////////////////////////////////////////////////////////
-//
-/*func OpenDatabase(user string, password string, dbname string) *sql.DB {
-
-	// Open up our database connection. XXX fix login parameters
-	db, err := sql.Open("mysql", "datamanager:gRLjXbqu0YwYhfK@tcp(127.0.0.1:3306)/arrowhead")
-
-	// if there is an error opening the connection, handle it
-	if err != nil {
-		fmt.Println("Could not connect to MySQL database")
-		panic(err.Error())
-	}
-
-	err = db.Ping()
-	if err != nil {
-		fmt.Println("Could not connect to MySQL database")
-		panic(err.Error()) // proper error handling instead of panic in your app
-	}
-
-	dmdb = db
-	return db
-}*/
-
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func GetDMDB() *sql.DB {
 	return dmdb
 }
@@ -52,9 +27,7 @@ func SetDMDB(db *sql.DB) {
 	dmdb = db
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func GetDMHistSystems(db *sql.DB) ([]string, error) {
 	var ret = []string{}
 
@@ -67,15 +40,14 @@ func GetDMHistSystems(db *sql.DB) ([]string, error) {
 	var system_name string
 	for result.Next() {
 		result.Scan(&system_name)
-		fmt.Printf("Sys: %s\n", system_name)
+		//fmt.Printf("Sys: %s\n", system_name)
 		ret = append(ret, system_name)
 	}
 
 	return ret, nil
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func GetDMHistSystemServices(db *sql.DB, sysName string) []string {
 	var ret = []string{}
 
@@ -101,8 +73,7 @@ func GetDMHistSystemServiceDataSignals(db *sql.DB, sysName string, srvName strin
 	return response, errors.New("Not implemented!")
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func GetDMHistSystemServiceData(db *sql.DB, sysName string, srvName string, from float64, to float64, count int) ([]dto.SenMLEntry, error) {
 	var response = []dto.SenMLEntry{}
 
@@ -169,7 +140,7 @@ func GetDMHistSystemServiceData(db *sql.DB, sysName string, srvName string, from
 
 			response = append(response, e)
 			jsonRespStr, _ = json.Marshal(response)
-			fmt.Printf("RESP: %s\n", jsonRespStr)
+			//fmt.Printf("RESP: %s\n", jsonRespStr)
 		}
 
 	}
@@ -189,41 +160,42 @@ func GetDMHistSystemServiceData(db *sql.DB, sysName string, srvName string, from
 		response[0].Bt = new(float64)
 		*response[0].Bt = *response[0].T
 		response[0].T = nil
-		for i, _ := range response{
+		for i, _ := range response {
 			if i == 0 {
 				continue
 			}
 			*response[i].T = *response[i].T - *response[0].Bt
-			*response[i].T = math.Round(*response[i].T*100)/100
+			*response[i].T = math.Round(*response[i].T*100) / 100
 		}
 	}
 
 	return response, nil
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func PutDMHistSystemServiceData(db *sql.DB, sysName string, srvName string, body string, message []dto.SenMLEntry) error {
 	var ret error = nil
 
 	log.Printf("PutDMHistSystemServiceData:\n%s", body)
 
+	if len(message) == 0 {
+		return errors.New("Empty message")
+	}
+
 	if message[0].Bt == nil {
 		fmt.Printf("bt is nil, creating!")
 		var bt64 float64
 		message[0].Bt = &bt64
-		//t := time.Now()
-
 		*message[0].Bt = float64(time.Now().UnixNano() / 1e6)
 	}
 	bt := *message[0].Bt
-	
+
 	maxTs := getLargestTimestamp(message)
 	minTs := getSmallestTimestamp(message)
 
 	var bu *string = nil
 	if message[0].Bu != nil {
-		bu = message[0].Bu //XXX check length
+		bu = message[0].Bu
 	}
 
 	serviceId := serviceToID(db, sysName, srvName)
@@ -234,9 +206,9 @@ func PutDMHistSystemServiceData(db *sql.DB, sysName string, srvName string, body
 			return errors.New("PutDMHistSystemServiceData: cannot create system")
 		}
 	}
-	fmt.Printf("PUT Using serviceId of: %v for %s\n", serviceId, body)
+	//fmt.Printf("PUT Using serviceId of: %v for %s\n", serviceId, body)
 
-	fmt.Printf("Storing BODY:\n%s\n", body)
+	//fmt.Printf("Storing BODY:\n%s\n", body)
 
 	stmt, err := db.Prepare("INSERT INTO dmhist_messages(sid, bt, mint, maxt, msg) VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
@@ -260,7 +232,7 @@ func PutDMHistSystemServiceData(db *sql.DB, sysName string, srvName string, body
 		var u sql.NullString
 		u.Valid = false
 		if e.U != nil {
-			u.String =  *e.U
+			u.String = *e.U
 			u.Valid = true
 		} else if bu != nil {
 			u.String = *bu
@@ -312,8 +284,8 @@ func createEndpoint(db *sql.DB, systemName string, serviceName string) (int64, e
 	return serviceId, nil
 }
 
-//=================================================================================================
-//returns largest (newest) timestamp value
+// =================================================================================================
+// returns largest (newest) timestamp value
 func getLargestTimestamp(message []dto.SenMLEntry) float64 {
 	var ret float64 = *message[0].Bt
 	bt := *message[0].Bt
@@ -339,8 +311,8 @@ func getLargestTimestamp(message []dto.SenMLEntry) float64 {
 	return ret
 }
 
-//=================================================================================================
-//returns largest (newest) timestamp value
+// =================================================================================================
+// returns largest (newest) timestamp value
 func getSmallestTimestamp(message []dto.SenMLEntry) float64 {
 	var ret float64 = *message[0].Bt
 	bt := *message[0].Bt
@@ -365,8 +337,7 @@ func getSmallestTimestamp(message []dto.SenMLEntry) float64 {
 	return ret
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func serviceToID(db *sql.DB, sysName string, srvName string) int64 {
 	var ret int64 = -1
 
@@ -383,7 +354,3 @@ func serviceToID(db *sql.DB, sysName string, srvName string) int64 {
 	fmt.Printf("found serviceId: %v for %s\n", ret, srvName)
 	return ret
 }
-
-/*float64 bt = message.get(0).getBt();
-  float64 maxTs = getLargestTimestamp(message);
-  float64 minTs = getSmallestTimestamp(message);*/

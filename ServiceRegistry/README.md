@@ -55,34 +55,34 @@ Status: 100% implemented
 GET /serviceregistry/mgmt
 Returns a list of Service Registry records. If page and item_per_page are not defined, returns all records.
 
-Status: 90% implemented
+Status: 100% implemented
 
 #### Add an entry
 POST /serviceregistry/mgmt
 Creates service registry record and returns the newly created record.
 
-Status: 90% implemented
+Status: 100% implemented
 
 #### Get an entry by ID
 GET /serviceregistry/mgmt/{id}
 Returns the Service Registry Entry specified by the ID path parameter.
 
-Status: 0% implemented
+Status: 100% implemented
 
 #### Replace an entry by ID
 Replace an entry by ID
 
-Status: 0% implemented
+Status: 100% implemented
 
 #### PUT /serviceregistry/mgmt/{id}
 PATCH /serviceregistry/mgmt/{id}
 
-Status: 0% implemented
+Status: 100% implemented
 
 #### Delete an entry by ID
 Delete an entry by ID
 
-Status: 0% implemented
+Status: 100% implemented
 
 #### Get grouped view
 GET /serviceregistry/mgmt/grouped
@@ -97,7 +97,7 @@ Status: 20% implemented
 GET /serviceregistry/mgmt/servicedef/{serviceDefinition}
 Returns a list of Service Registry records specified by the serviceDefinition path parameter. If page and item_per_page are not defined, returns all records.
 
-Status: 5% implemented
+Status: 100% implemented
 
 #### Get all services
 GET /serviceregistry/mgmt/services
@@ -110,7 +110,7 @@ Status: 100% implemented
 POST /serviceregistry/mgmt/services
 Creates service definition record and returns the newly created record.
 
-Status: 10% implemented
+Status: 100% implemented
 
 #### Get a service by ID
 GET /serviceregistry/mgmt/services/{id}
