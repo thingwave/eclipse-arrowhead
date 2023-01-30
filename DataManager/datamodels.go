@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"time"
+
 	dto "arrowhead.eu/common/datamodels"
 )
 
@@ -20,31 +21,10 @@ type SignalProperties struct {
 	SigKey   string // temperature
 	SigCount int    // 7
 }
-/*
-type SenMLEntry struct {
-	Bn   *string  `json:"bn,omitempty"`
-	Bt   *float64 `json:"bt,omitempty"`
-	Bu   *string  `json:"bu,omitempty"`
-	Bv   *float64 `json:"bv,omitempty"`
-	Bs   *float64 `json:"bs,omitempty"`
-	Bver *int     `json:"bver,omitempty"`
-
-	N  *string  `json:"n,omitempty"`
-	U  *string  `json:"u,omitempty"`
-	V  *float64 `json:"v,omitempty"`
-	Vs *string  `json:"vs,omitempty"`
-	Vb *bool    `json:"vb,omitempty"`
-	Vd *string  `json:"vd,omitempty"`
-
-	S  *float64 `json:"s,omitempty"`
-	T  *float64 `json:"t,omitempty"`
-	Ut *float64 `json:"ut,omitempty"`
-}*/
 
 const RELATIVE_TIMESTAMP_INDICATOR = float64(268435456)
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func validateSenML(senml []dto.SenMLEntry) error {
 
 	if len(senml) < 1 {
@@ -85,8 +65,7 @@ func validateSenML(senml []dto.SenMLEntry) error {
 	return nil
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
+// /////////////////////////////////////////////////////////////////////////////
 func checkSenMLParameters(senml []dto.SenMLEntry) error {
 
 	return nil

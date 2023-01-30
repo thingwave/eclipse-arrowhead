@@ -66,20 +66,11 @@ var config tomlConfig
 var t = 0
 var authenticationInfo string = ""
 
-//var port = 4461;
-
-func HelloServer(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Strict-Transport-Security", "3600")
-	w.Write([]byte("[{\"bn\": \"test-sys\"}, \"bt\": " + string(t) + "]\n"))
-}
-
 func Timer() {
 
 	for {
 		time.Sleep(2 * time.Second)
 		t++
-		fmt.Printf("t: %d\n", t)
 	}
 }
 
@@ -95,60 +86,6 @@ func SetupCloseHandler() {
 		time.Sleep(1 * time.Second)
 		os.Exit(0)
 	}()
-
-}
-
-func srClient(caCertPool *x509.CertPool, certFile string, keyFile string) {
-	/*cert, err := tls.LoadX509KeyPair(certFile, keyFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	client := &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				RootCAs:      caCertPool,
-				Certificates: []tls.Certificate{cert},
-			},
-		},
-	}*/
-
-	for {
-		time.Sleep(60 * 1000 * time.Millisecond)
-		//fmt.Printf("srClient woke up\n")
-
-		//resp, err := client.Get("https://localhost:8461/datamanager/proxy")
-		/*resp, err := client.Get("https://" + config.Sr_address + ":" + strconv.Itoa(config.Sr_port) + "/serviceregistry/echo")
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		htmlData, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		defer resp.Body.Close()
-		fmt.Printf("%v\n", resp.Status)
-		fmt.Printf(string(htmlData))
-
-		var requestJson = "{\"serviceDefinition\": \"proxy\",\n \"providerSystem\": {\n  \"systemName\": \"datamanager\", \"address\": \"127.0.0.1\", \"port\": 8461, \"authenticationInfo\": \"1234\"}}"
-		resp, err = client.Post("https://"+config.Sr_address+":"+strconv.Itoa(config.Sr_port)+"/serviceregistry/register", "application/json", bytes.NewBufferString(requestJson))
-		if err != nil {
-			fmt.Printf("REG error: " + err.Error())
-			continue
-		}
-
-		jsonData, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		defer resp.Body.Close()
-		fmt.Printf("%v\n", resp.Status)
-		fmt.Printf(string(jsonData))*/
-
-	}
 
 }
 
@@ -241,7 +178,7 @@ func main() {
 		}
 
 	} else {
-		log.Printf("Starting HTTP server\n")
+		log.Println("Starting HTTP server")
 
 		// Create a Server instance to listen on a port without TLS
 		server := &http.Server{
