@@ -34,10 +34,10 @@ Sr_port=8443
 # configure secure mode
 
 # Set this to false to disable https mode
-Server_ssl_enabled=true
+Server_ssl_enabled=false
 
 Server_ssl_key_store="certificates/certificateauthority.pem"
 Server_ssl_key_store_file="certificates/certificateauthority.key"
-Server_ssl_client_auth="need" #"none" #"need"
+Server_ssl_client_auth="none" #"none" #"need"
 Server_ssl_trust_store="../certificates/testcloud2/testcloud2.pem"
 #Server_ssl_trust_store_password="123456"
