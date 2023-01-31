@@ -82,6 +82,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 // / Arrowhead services ////////////////////////////////////////////
 func Echo(w http.ResponseWriter, r *http.Request) {
+  fmt.Println("/echo")
+
 	w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
 	fmt.Fprint(w, "Got it!")
 }
