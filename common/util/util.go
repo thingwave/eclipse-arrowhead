@@ -24,6 +24,9 @@ var srPort int = 8443
 var srSecure bool = false
 var systemAuthenticationInfo = ""
 
+var systemCertFile string = ""
+var systemKeyFile string = ""
+
 func SetConfig(sysName string, sysAddress string, sysPort int, sr_address string, sr_port int, sr_secure bool) {
 	log.Printf("SetConfig()\n")
 	systemName = sysName
@@ -32,6 +35,11 @@ func SetConfig(sysName string, sysAddress string, sysPort int, sr_address string
 	srAddress = sr_address
 	srPort = sr_port
 	srSecure = sr_secure
+}
+
+func SetTLSConfig(certFile string, keyFile string) {
+	systemCertFile = certFile
+	systemKeyFile = keyFile
 }
 
 func TestSRAvailability() (dto.ServiceRegistryResponseDTO, error) {
@@ -63,6 +71,13 @@ func RegisterService(systemname string, address string, port int, service_defini
 	if srSecure {
 		req.Secure = "CERTIFICATE" // XXX TOKEN support
 		mode = "https"
+
+		// Load client cert
+		cert, err := tls.LoadX509KeyPair(systemCertFile, systemKeyFile)
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		caCert, err := ioutil.ReadFile("../certificates/testcloud2/testcloud2.pem")
 		if err != nil {
 			log.Fatal(err)
@@ -70,7 +85,10 @@ func RegisterService(systemname string, address string, port int, service_defini
 		caCertPool := x509.NewCertPool()
 		caCertPool.AppendCertsFromPEM(caCert)
 		tr := &http.Transport{
-			TLSClientConfig: &tls.Config{RootCAs: caCertPool, InsecureSkipVerify: true},
+			TLSClientConfig: &tls.Config{
+				RootCAs:            caCertPool,
+				Certificates:       []tls.Certificate{cert},
+				InsecureSkipVerify: false},
 		}
 		client = &http.Client{Transport: tr}
 	} else {
