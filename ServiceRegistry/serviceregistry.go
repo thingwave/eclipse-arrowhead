@@ -124,11 +124,19 @@ func main() {
 
 	srvRegReq.ServiceUri = "/serviceregistry/register"
 	srvRegReq.EndOfValidity = ""
-	srvRegReq.Secure = "NOT_SECURE"
+	if config.Server_ssl_enabled {
+		srvRegReq.Secure = "NOT_SECURE"
+	} else {
+		srvRegReq.Secure = "CERTIFICATE"
+	}
 	srvRegReq.Metadata = nil
 	srvRegReq.Version = 1
 	srvRegReq.Interfaces = make([]string, 1)
-	srvRegReq.Interfaces[0] = "HTTP-INSECURE-JSON"
+	if config.Server_ssl_enabled {
+		srvRegReq.Interfaces[0] = "HTTP-SECURE-JSON"
+	} else {
+		srvRegReq.Interfaces[0] = "HTTP-INSECURE-JSON"
+	}
 	registerServiceForSystem(db, srvRegReq)
 
 	srvRegReq.ServiceDefinition = "service-register"
@@ -158,11 +166,11 @@ func main() {
 
 		authenticationInfo, err = util.SetAuthenticationInfo(config.Server_ssl_key_store)
 		if err != nil {
-			fmt.Println("Could not load system certificte public key!")
+			fmt.Println("Could not load system certificate public key!")
 			return
 		}
 
-		// Create a CA certificate pool and add cert.pem to it
+		// Create a CA certificate pool and add certeficate to it
 		caCert, err := ioutil.ReadFile(config.Server_ssl_trust_store)
 		if err != nil {
 			log.Fatal(err)
@@ -176,6 +184,7 @@ func main() {
 			authType = tls.RequireAndVerifyClientCert
 		}
 		tlsConfig := &tls.Config{
+      //MinVersion: tls.VersionTLS13,
 			ClientCAs:  caCertPool,
 			ClientAuth: authType,
 		}

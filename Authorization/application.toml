@@ -35,7 +35,7 @@ Server_ssl_enabled=true
 
 Server_ssl_key_store="certificates/authorization.pem"
 Server_ssl_key_store_file="certificates/authorization.key"
-Server_ssl_client_auth="need" #"none" #"need"
+Server_ssl_client_auth="need"
 Server_ssl_trust_store="../certificates/testcloud2/testcloud2.pem"
 #Server_ssl_trust_store_password="123456"
 

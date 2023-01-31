@@ -10,7 +10,7 @@ Datasource_database="arrowhead"
 
 
 # Orchestrator web-server parameters
-Server_address="192.168.11.19"
+Server_address="127.0.0.1"
 Server_port=8441
 
 ############################################
@@ -39,7 +39,7 @@ Server_ssl_enabled=true
 
 Server_ssl_key_store="certificates/orchestrator.pem"
 Server_ssl_key_store_file="certificates/orchestrator.key"
-Server_ssl_client_auth="none" #"need"
+Server_ssl_client_auth="need"
 Server_ssl_trust_store="../certificates/testcloud2/testcloud2.pem"
 #Server_ssl_trust_store_password="123456"
 
