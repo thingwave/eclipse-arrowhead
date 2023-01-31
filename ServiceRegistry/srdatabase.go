@@ -696,11 +696,11 @@ func updateProvider(db *sql.DB, system dto.SystemRequestDTO, systemId int64) err
 	//var systemName string = system.SystemName
 	var address string = system.Address
 	var port int = system.Port
-	//var authenticationInfo = newNullString(system.AuthenticationInfo)
+	var authenticationInfo = newNullString(system.AuthenticationInfo)
 
 	//fmt.Printf("updateProvider('%s', '%s', %d):\n", systemName, address, port)
 
-	_, err := db.Exec("UPDATE system_ (address, port, updated_at) VALUES(?, ?, NOW()) WHERE id=?", address, port, systemId) //XX metadata is NULL?
+	_, err := db.Exec("UPDATE system_ SET address=?, port=?, authentication_info=?, updated_at=NOW() WHERE id=?", address, port, authenticationInfo, systemId) //XX metadata is NULL?
 	if err != nil {
 		return err
 	}
