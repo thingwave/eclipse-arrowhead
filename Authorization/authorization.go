@@ -166,7 +166,7 @@ func main() {
 
 	interfaces := make([]string, 1)
 	if config.Server_ssl_enabled {
-		util.SetTLSConfig(config.Server_ssl_key_store, config.Server_ssl_key_store_file)
+		util.SetTLSConfig(config.Server_ssl_trust_store, config.Server_ssl_key_store, config.Server_ssl_key_store_file)
 		authenticationInfo, err = util.SetAuthenticationInfo(config.Server_ssl_key_store)
 		if err != nil {
 			fmt.Println("Could not load system certificate public key!")

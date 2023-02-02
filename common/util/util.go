@@ -24,6 +24,7 @@ var srPort int = 8443
 var srSecure bool = false
 var systemAuthenticationInfo = ""
 
+var systemCaFile string = ""
 var systemCertFile string = ""
 var systemKeyFile string = ""
 
@@ -37,7 +38,8 @@ func SetConfig(sysName string, sysAddress string, sysPort int, sr_address string
 	srSecure = sr_secure
 }
 
-func SetTLSConfig(certFile string, keyFile string) {
+func SetTLSConfig(caFile string, certFile string, keyFile string) {
+	systemCaFile = caFile
 	systemCertFile = certFile
 	systemKeyFile = keyFile
 }
@@ -78,7 +80,7 @@ func RegisterService(systemname string, address string, port int, service_defini
 			log.Fatal(err)
 		}
 
-		caCert, err := ioutil.ReadFile("../certificates/testcloud2/testcloud2.pem")
+		caCert, err := ioutil.ReadFile(systemCaFile)
 		if err != nil {
 			log.Fatal(err)
 		}
