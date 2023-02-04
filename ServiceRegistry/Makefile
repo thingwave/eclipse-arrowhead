@@ -1,7 +1,9 @@
 
 all:
 	go build -o ah-serviceregistry
-#$(SRC)
+
+all-arm64:
+	env GOOS=linux GOARCH=arm GOARM=5 go build -o ah-serviceregistry
 
 run:
 	./ah-serviceregistry
