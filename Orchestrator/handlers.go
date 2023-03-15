@@ -32,7 +32,7 @@ func Orchestration(w http.ResponseWriter, r *http.Request) {
 	if err := r.Body.Close(); err != nil {
 		panic(err)
 	}
-	//fmt.Printf("BODY: %s\n", body)
+	fmt.Printf("BODY: %s\n", body)
 
 	err = json.Unmarshal(body, &request)
 	if err != nil {
@@ -40,7 +40,7 @@ func Orchestration(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//fmt.Printf("REQ: %+v\n", request)
+	fmt.Printf("REQ: %+v\n", request)
 
 	jsonRespStr, err := json.Marshal(response)
 	if err != nil {
@@ -80,6 +80,8 @@ func StartStoreOrchestration(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, string(jsonRespStr))
 		return
 	}
+
+	response.Response, err = GetOrchestrationForSystem(GetOrDB(), systemId)
 
 	jsonRespStr, err := json.Marshal(response)
 	if err != nil {

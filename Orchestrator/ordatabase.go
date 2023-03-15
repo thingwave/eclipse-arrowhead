@@ -57,6 +57,26 @@ func getSystem(db *sql.DB, systemId int64) (dto.SystemResponseDTO, error) {
 
 }
 
+func GetOrchestrationForSystem(db *sql.DB, systemId int64) ([]dto.OrchestrationResultDTO, error) {
+	ret := make([]dto.OrchestrationResultDTO, 0)
+
+	fmt.Printf("GetOrchestrationForSystem(%v)\n", systemId)
+
+	result, err := db.Query("SELECT * FROM orchestrator_store WHERE consumer_system_id=?;", systemId)
+	if err != nil {
+		fmt.Println(err)
+		return ret, err
+	}
+	defer result.Close()
+
+	if result.Next() {
+		var entry dto.OrchestrationResultDTO
+		ret = append(ret, entry)
+	}
+
+	return ret, nil
+}
+
 // XXX: NOT FULLY IMPLEMENTED
 func GetTopPriorityEntries(db *sql.DB) ([]dto.StoreEntry, error) {
 	res := make([]dto.StoreEntry, 0)

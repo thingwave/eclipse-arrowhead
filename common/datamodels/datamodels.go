@@ -138,7 +138,7 @@ type OrchestrationResultDTO struct {
 }
 
 type OrchestrationResponseDTO struct {
-	Response OrchestrationResultDTO `json:"response"`
+	Response []OrchestrationResultDTO `json:"response"`
 }
 
 type StoreEntry struct {
@@ -176,7 +176,7 @@ type ServiceDTO struct {
 	Value string `json:"value"`
 }
 
-///////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 type SenMLEntry struct {
 	Bn   *string  `json:"bn,omitempty"`
 	Bt   *float64 `json:"bt,omitempty"`

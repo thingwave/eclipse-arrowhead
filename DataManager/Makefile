@@ -3,7 +3,7 @@ all:
 	go build -o ah-datamanager
 
 all-arm64:
-        env GOOS=linux GOARCH=arm GOARM=5 go build -o ah-datamanager
+	env GOOS=linux GOARCH=arm GOARM=5 go build -o ah-datamanager
 
 run:
 	./ah-datamanager
