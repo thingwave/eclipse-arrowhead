@@ -127,7 +127,9 @@ type CloudRequestDTO struct {
 }
 
 type OrchestrationResultDTO struct {
-	Provider SystemResponseDTO `json:"provider"`
+	Provider   SystemResponseDTO             `json:"provider"`
+	Service    ServiceDefinitionResponseDTO  `json:"service"`
+	Interfaces []ServiceInterfaceResponseDTO `json:"interfaces"`
 
 	ServiceUri string             `json:"serviceUri"`
 	Secure     string             `json:"secure"`

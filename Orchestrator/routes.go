@@ -22,7 +22,7 @@ var clientRoutes = Routes{
 	Route{
 		"Orchestrator",
 		[]string{"POST"},
-		"/orchstrator/orchestration",
+		"/orchestrator/orchestration",
 		Orchestration,
 	},
 	Route{
