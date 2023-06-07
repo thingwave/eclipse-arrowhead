@@ -34,7 +34,7 @@ Sr_port=8443
 # configure secure mode
 
 # Set this to false to disable https mode
-Server_ssl_enabled=true
+Server_ssl_enabled=false
 
 
 Server_ssl_key_store="certificates/orchestrator.pem"

@@ -28,7 +28,7 @@ Core_system_name="serviceregistry"
 # configure secure mode
 
 # Set this to false to disable https mode
-Server_ssl_enabled=true
+Server_ssl_enabled=false
 
 Server_ssl_key_store="certificates/service_registry.pem"
 Server_ssl_key_store_file="certificates/service_registry.key"

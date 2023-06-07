@@ -6,6 +6,7 @@ This is a an Arrowhead Orchestrator written in Go.
 
 
 #### Echo
+GET /orchestrator//echo
 This endpoint returns a "Got it!" upon a GET request.
 
 Status: 100% implemented
@@ -13,13 +14,14 @@ Status: 100% implemented
 ### Orchestration
 POST /orchestrator/orchestration
 
-Status: % implemented
+Status: 20% implemented
 
 ### Start store Orchestration by ID
+GET /orchestrator//orchestration/{id}
+
 Start store Orchestration by ID
 
 Status 0% implemented
 
 ## Bugs
-1. Hard coded serviceregistry IP and port in util tool!
-2. Missing support for HTTPS in util tool!
+1. Missing support for HTTPS in util tool!

@@ -178,6 +178,36 @@ type ServiceDTO struct {
 	Value string `json:"value"`
 }
 
+type ServiceRequestForm struct {
+	RequesterSystem    SystemRequestDTO       `json:"requesterSystem"`
+	RequestedService   RequestedServiceDTO    `json:"requestedService"`
+	PreferredProviders []PreferredProviderDTO `json:"preferredProviders,omitempty"`
+}
+type RequestedServiceDTO struct {
+	ServiceDefinitionRequirement string             `json:"serviceDefinitionRequirement"`
+	InterfaceRequirements        []string           `json:"interfaceRequirements"`
+	SecurityRequirements         []string           `json:"securityRequirements,omitempty"`
+	MetadataRequirements         *map[string]string `json:"metadataRequirements,omitempty"`
+	VersionRequirement           int64              `json:"versionRequirement,omitempty"`
+	MaxVersionRequirement        int64              `json:"maxVersionRequirement,omitempty"`
+	MinVersionRequirement        int64              `json:"minVersionRequirement,omitempty"`
+}
+
+type PreferredProviderDTO struct {
+	ProviderCloud  ProviderCloudDTO  `json:"providerCloud"`
+	ProviderSystem ProviderSystemDTO `json:"providerSystem"`
+}
+
+type ProviderCloudDTO struct {
+	Operator string `json:"operator"`
+	Name     string `json:"name"`
+}
+type ProviderSystemDTO struct {
+	SystemName string `json:"systemName"`
+	Address    string `json:"address"`
+	Port       uint16 `json:"port"`
+}
+
 // /////////////////////////////////////////////////////////////////////////////
 type SenMLEntry struct {
 	Bn   *string  `json:"bn,omitempty"`

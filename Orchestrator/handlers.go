@@ -22,15 +22,15 @@ func Echo(w http.ResponseWriter, r *http.Request) {
 
 // /////////////////////////////////////////////////////////////////////////////
 func Orchestration(w http.ResponseWriter, r *http.Request) {
-	var request dto.OrchestrationFormRequestDTO
+	var request dto.ServiceRequestForm
 	var response dto.OrchestrationResponseDTO
 
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 10*1024))
 	if err != nil {
-		panic(err)
+		panic(err) //XXX
 	}
 	if err := r.Body.Close(); err != nil {
-		panic(err)
+		panic(err) //XXX
 	}
 	fmt.Printf("BODY: %s\n", body)
 
@@ -42,6 +42,9 @@ func Orchestration(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("REQ: %+v\n", request)
 
+	// get data from database
+
+	//prepare response
 	jsonRespStr, err := json.Marshal(response)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
