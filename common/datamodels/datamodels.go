@@ -136,7 +136,7 @@ type OrchestrationResultDTO struct {
 	Metadata   *map[string]string `json:"metadata,omitempty"`
 
 	Version  int      `json:"version"`
-	Warnings []string `json:"warnings"`
+	Warnings []string `json:"warnings,omitempty"`
 }
 
 type OrchestrationResponseDTO struct {

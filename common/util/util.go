@@ -28,8 +28,9 @@ var systemCaFile string = ""
 var systemCertFile string = ""
 var systemKeyFile string = ""
 
+//
 func SetConfig(sysName string, sysAddress string, sysPort int, sr_address string, sr_port int, sr_secure bool) {
-	log.Printf("SetConfig()\n")
+	//log.Printf("SetConfig()\n")
 	systemName = sysName
 	systemAddress = sysAddress
 	systemPort = sysPort
@@ -38,12 +39,14 @@ func SetConfig(sysName string, sysAddress string, sysPort int, sr_address string
 	srSecure = sr_secure
 }
 
+//
 func SetTLSConfig(caFile string, certFile string, keyFile string) {
 	systemCaFile = caFile
 	systemCertFile = certFile
 	systemKeyFile = keyFile
 }
 
+//
 func TestSRAvailability() (dto.ServiceRegistryResponseDTO, error) {
 	log.Printf("TestSRAvailability()\n")
 
@@ -52,6 +55,7 @@ func TestSRAvailability() (dto.ServiceRegistryResponseDTO, error) {
 	return ret, nil
 }
 
+//
 func RegisterService(systemname string, address string, port int, service_definition string, service_uri string, version int, interfaces []string) (bool, error) {
 	log.Printf("RegisterService('%s', '%s', %d, '%s', '%s')\n", systemname, address, port, service_definition, service_uri)
 	var client *http.Client
@@ -125,6 +129,7 @@ func RegisterService(systemname string, address string, port int, service_defini
 	return true, nil
 }
 
+//
 func UnregisterService(systemname string, address string, port int, service_definition string, service_uri string) error {
 	log.Printf("UnregisterService('%s', '%s', %d, '%s', '%s')\n", systemname, address, port, service_definition, service_uri)
 	var client *http.Client
@@ -174,6 +179,7 @@ func UnregisterService(systemname string, address string, port int, service_defi
 	return nil
 }
 
+//
 func SetAuthenticationInfo(fileName string) (string, error) {
 	//log.Printf("SetAuthenticationInfo(%s)\n", fileName)
 
@@ -193,6 +199,7 @@ func SetAuthenticationInfo(fileName string) (string, error) {
 	return cert, nil
 }
 
+//
 func Timestamp2Arrowhead(ts string) string {
 	//fmt.Printf("timestamp2Arrowhead(%s)\n", ts)
 	intTs, _ := strconv.Atoi(ts)
