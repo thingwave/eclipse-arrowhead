@@ -174,10 +174,23 @@ func HandleStoreEntryByID(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	//fmt.Printf("ID: %s\n", vars["id"])
+	fmt.Printf("HandleStoreEntryByID(%s):\n", vars["id"])
+	entryId32, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	entryId := int64(entryId32)
 
 	switch r.Method {
 	case http.MethodGet:
+		res, _ := GetEntryById(GetOrDB(), entryId)
+		jsonRespStr, _ := json.Marshal(res)
+		fmt.Println(string(jsonRespStr))
+		w.Header().Add("Content-Type", "application/json")
+		fmt.Fprint(w, string(jsonRespStr)+"\n")
+		return
+
 	case http.MethodDelete:
 	}
 }

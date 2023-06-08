@@ -40,7 +40,7 @@ Status 10% implemented
 #### Get Store Entry by ID
 GET /mgmt/store/{id}
 
-Status 10% implemented
+Status 100% implemented
 
 #### Delete Store Entry by ID
 DELETE /mgmt/store/{id}
