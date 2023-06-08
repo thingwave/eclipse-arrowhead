@@ -144,7 +144,17 @@ type OrchestrationResponseDTO struct {
 }
 
 type StoreEntry struct {
-	ID int `json:"id"`
+	Id                int                          `json:"id"`
+	ServiceDefinition ServiceDefinitionResponseDTO `json:"serviceDefinition"`
+	ConsumerSystem    SystemResponseDTO            `json:"consumerSystem"`
+	Foreign           bool                         `json:"foreign"`
+	//ProviderCloud xx `json:"providerCloud"`
+	ProviderSystem   SystemResponseDTO           `json:"providerSystem"`
+	ServiceInterface ServiceInterfaceResponseDTO `json:"serviceInterface"`
+	Priority         int                         `json:"priority"`
+	Attribute        *map[string]string          `json:"attribute,omitempty"`
+	CreatedAt        string                      `json:"createdAt"`
+	UpdatedAt        string                      `json:"updatedAt"`
 }
 
 type StoreEntryList struct {

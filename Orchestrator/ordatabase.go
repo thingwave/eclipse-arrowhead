@@ -192,6 +192,39 @@ func UpdatePriorityForSystem(db *sql.DB, systemId string, priority int) error {
 	return nil
 }
 
+func GetAllEntries(db *sql.DB) ([]dto.StoreEntry, error) {
+	//var resp []dto.StoreEntry
+	res := make([]dto.StoreEntry, 0)
+
+	results, err := db.Query("SELECT id, service_id, consumer_system_id, provider_system_id, foreign_, service_interface_id, priority, UNIX_TIMESTAMP(created_at), UNIX_TIMESTAMP(updated_at)FROM orchestrator_store;")
+	if err != nil {
+		return res, nil
+	}
+	defer results.Close()
+
+	for results.Next() {
+		var storeEntry dto.StoreEntry
+		var service_id, consumer_system_id, provider_system_id, service_interface_id int64
+		var foreign int
+		var created_at, updated_at string
+		_ = results.Scan(&storeEntry.Id, &service_id, &consumer_system_id, &provider_system_id, &foreign, &service_interface_id, &storeEntry.Priority, &created_at, &updated_at) //, &interfaceEntry.InterfaceName) //XXX: BUG HERE
+		storeEntry.ServiceDefinition, _ = GetService(db, service_id)
+		interfaces, _ := getInterfaceByID(db, service_interface_id)
+		storeEntry.ServiceInterface = interfaces[0]
+		if foreign != 0 {
+			storeEntry.Foreign = true
+		}
+		storeEntry.ConsumerSystem, _ = getSystem(db, consumer_system_id)
+		storeEntry.ProviderSystem, _ = getSystem(db, provider_system_id)
+		storeEntry.CreatedAt = util.Timestamp2Arrowhead(created_at)
+		storeEntry.UpdatedAt = util.Timestamp2Arrowhead(updated_at)
+
+		res = append(res, storeEntry)
+	}
+
+	return res, nil
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 

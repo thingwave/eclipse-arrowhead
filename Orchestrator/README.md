@@ -30,7 +30,7 @@ There endpoints are mainly used by the Management Tool and Cloud Administrators.
 ####  Get all Store Entries
 GET /mgmt/store
 
-Status 10% implemented
+Status 100% implemented
 
 ####  Add Store Entries
 POST /mgmt/store

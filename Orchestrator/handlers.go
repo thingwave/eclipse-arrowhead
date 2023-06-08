@@ -147,6 +147,8 @@ func HandleAllStoreEntries(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		// fill in the response here
+		response.Data, _ = GetAllEntries(GetOrDB())
+		response.Count = len(response.Data)
 
 	case http.MethodPost:
 		// add store rule here
