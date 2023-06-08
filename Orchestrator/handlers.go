@@ -26,6 +26,19 @@ func Orchestration(w http.ResponseWriter, r *http.Request) {
 	var response dto.OrchestrationResponseDTO
 	response.Response = make([]dto.OrchestrationResultDTO, 0)
 
+	contentType := r.Header.Get("Content-type")
+	if contentType != "application/json" { //create middleware fot this!
+		var errMsg dto.ErrorMessageDTO
+		errMsg.ErrorMessage = fmt.Sprintf("Content-Type '%s' not valid.", contentType)
+		errMsg.ErrorCode = 400
+		errMsg.ExceptionType = "INVALID_FORMAT"
+		jsonRespStr, _ := json.Marshal(errMsg)
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, string(jsonRespStr))
+		return
+	}
+
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 10*1024))
 	if err != nil {
 		panic(err) //XXX
@@ -42,6 +55,19 @@ func Orchestration(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Printf("REQ: %+v\n", request)
+	//validate request before use!
+	err = validateServiceRequestForm(request)
+	if err != nil {
+		var errMsg dto.ErrorMessageDTO
+		errMsg.ErrorMessage = fmt.Sprintf("Bad request input")
+		errMsg.ErrorCode = 400
+		errMsg.ExceptionType = "INVALID_REQUEST"
+		jsonRespStr, _ := json.Marshal(errMsg)
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, string(jsonRespStr))
+		return
+	}
 
 	sys, err := getSystemByName(GetOrDB(), request.RequesterSystem.SystemName)
 	if err != nil {
@@ -55,9 +81,6 @@ func Orchestration(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, string(jsonRespStr))
 		return
 	}
-
-	//validate request before use!
-	//validateOrchestrationRequest()
 
 	// get data from database
 	data, err := GetOrchestrationForSystem(GetOrDB(), sys.Id)
@@ -263,4 +286,9 @@ func HandleStoreModifyPriority(w http.ResponseWriter, r *http.Request) {
 		//fmt.Printf("CHANGE_PRIORITY(%s) => %d\n", k, v)
 		UpdatePriorityForSystem(GetOrDB(), k, v)
 	}
+}
+
+func validateServiceRequestForm(form dto.ServiceRequestForm) error {
+
+	return nil
 }
