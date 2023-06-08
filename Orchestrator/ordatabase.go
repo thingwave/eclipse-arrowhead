@@ -57,6 +57,30 @@ func getSystem(db *sql.DB, systemId int64) (dto.SystemResponseDTO, error) {
 
 }
 
+func getSystemByName(db *sql.DB, systemName string) (dto.SystemResponseDTO, error) {
+	var ret dto.SystemResponseDTO
+
+	fmt.Printf("getSystemByName(%s)\n", systemName)
+
+	result, err := db.Query("SELECT id, system_name, address, port FROM system_ WHERE system_name=? LIMIT 1;", systemName)
+	if err != nil {
+		fmt.Println(err)
+		return ret, err
+	}
+	defer result.Close()
+
+	if result.Next() {
+		err = result.Scan(&ret.Id, &ret.SystemName, &ret.Address, &ret.Port)
+		if err != nil {
+			fmt.Println(err)
+			return ret, err
+		}
+		return ret, nil
+
+	}
+	return ret, errors.New("No such system")
+}
+
 func GetService(db *sql.DB, serviceId int64) (dto.ServiceDefinitionResponseDTO, error) {
 	var ret dto.ServiceDefinitionResponseDTO
 

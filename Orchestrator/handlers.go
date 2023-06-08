@@ -42,6 +42,9 @@ func Orchestration(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("REQ: %+v\n", request)
 
+	//validate request before use!
+	//validateOrchestrationRequest()
+
 	// get data from database
 
 	//prepare response

@@ -11,17 +11,57 @@ This endpoint returns a "Got it!" upon a GET request.
 
 Status: 100% implemented
 
-### Orchestration
+#### Orchestration
 POST /orchestrator/orchestration
 
 Status: 20% implemented
 
-### Start store Orchestration by ID
+#### Start store Orchestration by ID
 GET /orchestrator//orchestration/{id}
 
-Start store Orchestration by ID
+Status 20% implemented
 
-Status 0% implemented
+### Private endpoint description
+These services can only be used by other core services, therefore they are not part of the public API.
+
+### Management endpoint Description
+There endpoints are mainly used by the Management Tool and Cloud Administrators.
+
+####  Get all Store Entries
+GET /mgmt/store
+
+Status ?% implemented
+
+####  Add Store Entries
+POST /mgmt/store
+
+Status ?% implemented
+
+#### Get Store Entry by ID
+GET /mgmt/store/{id}
+
+Status ?% implemented
+
+#### Delete Store Entry by ID
+DELETE /mgmt/store/{id}
+
+Status ?% implemented
+
+#### Get Entries by Consumer
+POST /mgmt/store/all_by_consumer
+
+Status ?% implemented
+
+#### Get Top Priority Entries
+GET /mgmt/store/all_top_priority
+
+Status ?% implemented
+
+#### Modify Priorities
+POST /mgmt/store/modify_priorities
+
+Status ?% implemented
 
 ## Bugs
-1. Missing support for HTTPS in util tool!
+1. Hard coded IP adddreses in util package!
+2. Missing support for HTTPS in util package!
