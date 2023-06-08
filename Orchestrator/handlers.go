@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"io"
@@ -196,8 +197,9 @@ func HandleStoreEntryByID(w http.ResponseWriter, r *http.Request) {
 }
 
 // /////////////////////////////////////////////////////////////////////////////
-func GetEntrysByConsumer(w http.ResponseWriter, r *http.Request) {
+func GetEntriesByConsumer(w http.ResponseWriter, r *http.Request) {
 	var res dto.StoreEntryList
+	res.Data = make([]dto.StoreEntry, 0)
 
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 10*1024))
 	if err != nil {
@@ -207,6 +209,27 @@ func GetEntrysByConsumer(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	fmt.Printf("BODY: %s\n", body)
+	var request dto.ConsumerRuleRequestForm
+
+	err = json.Unmarshal(body, &request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	fmt.Printf("REQ: %+v\n", request)
+	err = validateConsumerRuleForm(request)
+	if err != nil {
+		var errMsg dto.ErrorMessageDTO
+		errMsg.ErrorMessage = err.Error()
+		errMsg.ErrorCode = 400
+		errMsg.ExceptionType = "INVALID_REQUEST"
+		jsonRespStr, _ := json.Marshal(errMsg)
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, string(jsonRespStr))
+		return
+	}
 
 	jsonRespStr, _ := json.Marshal(res)
 	fmt.Println(string(jsonRespStr))
@@ -303,7 +326,28 @@ func HandleStoreModifyPriority(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// /////////////////////////////////////////////////////////////////////////////
+// VALIDATORS
 func validateServiceRequestForm(form dto.ServiceRequestForm) error {
+
+	return nil
+}
+
+func validateConsumerRuleForm(form dto.ConsumerRuleRequestForm) error {
+
+	if form.ConsumerSystemId < 0 {
+		return errors.New("Negative system ID")
+	}
+
+	if len(form.ServiceDefinitionName) < 2 {
+		return errors.New("Too short ServiceDefinitionName")
+	}
+
+	if form.ServiceInterfaceName != nil {
+		if len(*form.ServiceInterfaceName) < 2 {
+			return errors.New("Too short ServiceInterfaceName")
+		}
+	}
 
 	return nil
 }

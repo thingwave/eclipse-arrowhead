@@ -178,6 +178,12 @@ type ErrorMessageDTO struct {
 	Origin        string `json:"origin,omitempty"`
 }
 
+type ConsumerRuleRequestForm struct {
+	ConsumerSystemId      int64   `json:"consumerSystemId"`
+	ServiceDefinitionName string  `json:"serviceDefinitionName"`
+	ServiceInterfaceName  *string `json:"ServiceInterfaceName,omitempty"`
+}
+
 type InterfaceDTO struct {
 	Id    int64  `json:"id"`
 	Value string `json:"value"`
