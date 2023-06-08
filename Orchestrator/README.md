@@ -63,5 +63,4 @@ POST /mgmt/store/modify_priorities
 Status ?% implemented
 
 ## Bugs
-1. Hard coded IP adddreses in util package!
-2. Missing support for HTTPS in util package!
+n/a
