@@ -18,7 +18,7 @@ ThingWave have developed a helper tool called ahctl to interact with a local clo
 
 # Todo list
 
-Below is a list if some of the planned features:
+Below is a list of some of the planned features:
 
 * Debian package support
 * RHEL package support
