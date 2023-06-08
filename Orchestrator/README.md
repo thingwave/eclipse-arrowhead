@@ -63,4 +63,4 @@ POST /mgmt/store/modify_priorities
 Status 10% implemented
 
 ## Bugs
-n/a
+1. "serviceUri": "", (missing in Orchstration response, do lockup!!)
