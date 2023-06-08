@@ -231,6 +231,9 @@ func GetEntriesByConsumer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	res.Data, _ = GetEntriesByConsumerAndService(GetOrDB(), request.ConsumerSystemId, request.ServiceDefinitionName, request.ServiceInterfaceName)
+	res.Count = len(res.Data)
+
 	jsonRespStr, _ := json.Marshal(res)
 	fmt.Println(string(jsonRespStr))
 	w.Header().Add("Content-Type", "application/json")

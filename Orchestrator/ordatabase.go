@@ -81,6 +81,28 @@ func getSystemByName(db *sql.DB, systemName string) (dto.SystemResponseDTO, erro
 	return ret, errors.New("No such system")
 }
 
+func GetServiceByName(db *sql.DB, serviceDefinitionName string) (dto.ServiceDefinitionResponseDTO, error) {
+	var ret dto.ServiceDefinitionResponseDTO
+
+	result, err := db.Query("SELECT id, service_definition, UNIX_TIMESTAMP(created_at), UNIX_TIMESTAMP(updated_at) FROM service_definition WHERE service_definition =? LIMIT 1;", serviceDefinitionName)
+	if err != nil {
+		fmt.Println(err)
+		return ret, err
+	}
+	defer result.Close()
+
+	if result.Next() {
+		var created_at, updated_at string
+		_ = result.Scan(&ret.Id, &ret.ServiceDefinition, &created_at, &updated_at)
+		ret.CreatedAt = util.Timestamp2Arrowhead(created_at)
+		ret.UpdatedAt = util.Timestamp2Arrowhead(updated_at)
+
+		return ret, nil
+	}
+
+	return ret, errors.New(fmt.Sprintf("Service with name '%ss' not found.", serviceDefinitionName))
+}
+
 func GetService(db *sql.DB, serviceId int64) (dto.ServiceDefinitionResponseDTO, error) {
 	var ret dto.ServiceDefinitionResponseDTO
 
@@ -104,11 +126,41 @@ func GetService(db *sql.DB, serviceId int64) (dto.ServiceDefinitionResponseDTO, 
 }
 
 // /////////////////////////////////////////////////////////////////////////////
+func getInterfaceByName(db *sql.DB, serviceInterfaceName string) (dto.ServiceInterfaceResponseDTO, error) {
+	fmt.Printf("getInterfaceByID(%s)\n", serviceInterfaceName)
+	var ret dto.ServiceInterfaceResponseDTO
+
+	result, err := db.Query("SELECT id, interface_name, UNIX_TIMESTAMP(created_at), UNIX_TIMESTAMP(updated_at) FROM service_interface WHERE interface_name=? LIMIT 1;", serviceInterfaceName)
+	if err != nil {
+		panic(err.Error()) //XXX proper error handling instead of panic in your app
+		return ret, err
+	}
+	defer result.Close()
+
+	if result.Next() {
+		var interfaceEntry dto.ServiceInterfaceResponseDTO
+		var created_at, updated_at string
+		err = result.Scan(&interfaceEntry.Id, &interfaceEntry.InterfaceName, &created_at, &updated_at)
+		if err != nil {
+			fmt.Println(err)
+			return ret, err
+		} else {
+			interfaceEntry.CreatedAt = util.Timestamp2Arrowhead(created_at)
+			interfaceEntry.UpdatedAt = util.Timestamp2Arrowhead(updated_at)
+			//fmt.Println("\tInterface name: ", interfaceEntry.InterfaceName)
+			fmt.Printf("%+v\n", interfaceEntry)
+			ret = interfaceEntry
+		}
+	}
+
+	return ret, nil
+}
+
 func getInterfaceByID(db *sql.DB, serviceInterfaceID int64) ([]dto.ServiceInterfaceResponseDTO, error) {
 	fmt.Printf("getInterfaceByID(%v)\n", serviceInterfaceID)
 	ret := make([]dto.ServiceInterfaceResponseDTO, 0)
 
-	results, err := db.Query("SELECT id, interface_name, UNIX_TIMESTAMP(created_at), UNIX_TIMESTAMP(updated_at) FROM service_interface WHERE id=?;", serviceInterfaceID)
+	results, err := db.Query("SELECT id, interface_name, UNIX_TIMESTAMP(created_at), UNIX_TIMESTAMP(updated_at) FROM service_interface WHERE id=? LIMIT 1;", serviceInterfaceID)
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
 		return ret, err
@@ -219,6 +271,57 @@ func GetAllEntries(db *sql.DB) ([]dto.StoreEntry, error) {
 		storeEntry.UpdatedAt = util.Timestamp2Arrowhead(updated_at)
 
 		res = append(res, storeEntry)
+	}
+
+	return res, nil
+}
+
+func GetEntriesByConsumerAndService(db *sql.DB, consumerSystemId int64, serviceDefinitionName string, serviceInterfaceName *string) ([]dto.StoreEntry, error) {
+	res := make([]dto.StoreEntry, 0)
+
+	service, err := GetServiceByName(db, serviceDefinitionName)
+	if err != nil {
+		return res, err
+	}
+	if service.Id == 0 {
+		return res, errors.New("No such ServiceDefinition")
+	}
+
+	var result *sql.Rows = nil
+	if serviceInterfaceName != nil {
+		interfacE, err := getInterfaceByName(db, *serviceInterfaceName)
+		if err != nil {
+			return res, err
+		}
+		fmt.Printf("Interface: %+v\n", interfacE)
+		result, err = db.Query("SELECT id, service_id, consumer_system_id, provider_system_id, foreign_, service_interface_id, priority, UNIX_TIMESTAMP(created_at), UNIX_TIMESTAMP(updated_at) FROM orchestrator_store  WHERE consumer_system_id=? AND service_id=? AND service_interface_id=?", consumerSystemId, service.Id, interfacE.Id)
+	} else {
+		result, err = db.Query("SELECT id, service_id, consumer_system_id, provider_system_id, foreign_, service_interface_id, priority, UNIX_TIMESTAMP(created_at), UNIX_TIMESTAMP(updated_at) FROM orchestrator_store  WHERE consumer_system_id=? AND service_id=?", consumerSystemId, service.Id)
+	}
+
+	if err != nil {
+		return res, nil
+	}
+	defer result.Close()
+
+	for result.Next() {
+		var entry dto.StoreEntry
+		var service_id, consumer_system_id, provider_system_id, service_interface_id int64
+		var foreign int
+		var created_at, updated_at string
+		_ = result.Scan(&entry.Id, &service_id, &consumer_system_id, &provider_system_id, &foreign, &service_interface_id, &entry.Priority, &created_at, &updated_at)
+
+		interfaces, _ := getInterfaceByID(db, service_interface_id)
+		entry.ServiceDefinition = service
+		entry.ServiceInterface = interfaces[0]
+		if foreign != 0 {
+			entry.Foreign = true
+		}
+		entry.ConsumerSystem, _ = getSystem(db, consumer_system_id)
+		entry.ProviderSystem, _ = getSystem(db, provider_system_id)
+		entry.CreatedAt = util.Timestamp2Arrowhead(created_at)
+		entry.UpdatedAt = util.Timestamp2Arrowhead(updated_at)
+		res = append(res, entry)
 	}
 
 	return res, nil

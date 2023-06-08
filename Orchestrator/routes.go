@@ -54,7 +54,7 @@ var mgmtRoutes = Routes{
 		"GetEntriesbyConsumer",
 		[]string{"POST"},
 		"/store/all_by_consumer",
-		GetEntrysByConsumer,
+		GetEntriesByConsumer,
 	},
 	Route{
 		"GetTopPriorityEntries",
