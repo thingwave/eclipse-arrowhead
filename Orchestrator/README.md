@@ -45,12 +45,12 @@ Status 100% implemented
 #### Delete Store Entry by ID
 DELETE /mgmt/store/{id}
 
-Status 10% implemented
+Status 20% implemented
 
 #### Get Entries by Consumer
 POST /mgmt/store/all_by_consumer
 
-Status 10% implemented
+Status 100% implemented
 
 #### Get Top Priority Entries
 GET /mgmt/store/all_top_priority
