@@ -43,7 +43,7 @@ func Orchestration(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("REQ: %+v\n", request)
 
-	_, err = getSystemByName(GetOrDB(), request.RequesterSystem.SystemName)
+	sys, err := getSystemByName(GetOrDB(), request.RequesterSystem.SystemName)
 	if err != nil {
 		var errMsg dto.ErrorMessageDTO
 		errMsg.ErrorMessage = fmt.Sprintf("System with name %s not found.", request.RequesterSystem.SystemName)
@@ -60,7 +60,9 @@ func Orchestration(w http.ResponseWriter, r *http.Request) {
 	//validateOrchestrationRequest()
 
 	// get data from database
-	_, err = GetOrchestrationForSystem(GetOrDB(), 0) //XXX usesystem id here!!
+	data, err := GetOrchestrationForSystem(GetOrDB(), sys.Id)
+	fmt.Printf("\nDATA\n%+v\n", data)
+	response.Response = data
 
 	//prepare response
 	jsonRespStr, err := json.Marshal(response)
