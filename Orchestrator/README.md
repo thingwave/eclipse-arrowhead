@@ -14,7 +14,7 @@ Status: 100% implemented
 #### Orchestration
 POST /orchestrator/orchestration
 
-Status: 20% implemented
+Status: 50% implemented
 
 #### Start store Orchestration by ID
 GET /orchestrator//orchestration/{id}
