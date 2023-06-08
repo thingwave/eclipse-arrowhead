@@ -3,7 +3,7 @@ package main
 import "net/http"
 
 type Route struct {
-	Name string
+	Name        string
 	Methods     []string
 	Pattern     string
 	HandlerFunc http.HandlerFunc
@@ -34,8 +34,7 @@ var clientRoutes = Routes{
 }
 
 // Private endpoints - /orchestrator/ + <Route below>
-var privateRoutes = Routes{
-}
+var privateRoutes = Routes{}
 
 // Management endpoints - /orchestrator/mgmt + <Route below>
 var mgmtRoutes = Routes{
@@ -55,7 +54,7 @@ var mgmtRoutes = Routes{
 		"GetEntriesbyConsumer",
 		[]string{"POST"},
 		"/store/all_by_consumer",
-		HandleStoreEntrysByConsumer,
+		GetEntrysByConsumer,
 	},
 	Route{
 		"GetTopPriorityEntries",

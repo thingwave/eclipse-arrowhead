@@ -24,6 +24,7 @@ func Echo(w http.ResponseWriter, r *http.Request) {
 func Orchestration(w http.ResponseWriter, r *http.Request) {
 	var request dto.ServiceRequestForm
 	var response dto.OrchestrationResponseDTO
+	response.Response = make([]dto.OrchestrationResultDTO, 0)
 
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 10*1024))
 	if err != nil {
@@ -42,10 +43,24 @@ func Orchestration(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("REQ: %+v\n", request)
 
+	_, err = getSystemByName(GetOrDB(), request.RequesterSystem.SystemName)
+	if err != nil {
+		var errMsg dto.ErrorMessageDTO
+		errMsg.ErrorMessage = fmt.Sprintf("System with name %s not found.", request.RequesterSystem.SystemName)
+		errMsg.ErrorCode = 400
+		errMsg.ExceptionType = "INVALID_PARAMETER"
+		jsonRespStr, _ := json.Marshal(errMsg)
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, string(jsonRespStr))
+		return
+	}
+
 	//validate request before use!
 	//validateOrchestrationRequest()
 
 	// get data from database
+	_, err = GetOrchestrationForSystem(GetOrDB(), 0) //XXX usesystem id here!!
 
 	//prepare response
 	jsonRespStr, err := json.Marshal(response)
@@ -141,8 +156,22 @@ func HandleStoreEntryByID(w http.ResponseWriter, r *http.Request) {
 }
 
 // /////////////////////////////////////////////////////////////////////////////
-func HandleStoreEntrysByConsumer(w http.ResponseWriter, r *http.Request) {
+func GetEntrysByConsumer(w http.ResponseWriter, r *http.Request) {
+	var res dto.StoreEntryList
 
+	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 10*1024))
+	if err != nil {
+		panic(err)
+	}
+	if err := r.Body.Close(); err != nil {
+		panic(err)
+	}
+	fmt.Printf("BODY: %s\n", body)
+
+	jsonRespStr, _ := json.Marshal(res)
+	fmt.Println(string(jsonRespStr))
+	w.Header().Add("Content-Type", "application/json")
+	fmt.Fprint(w, string(jsonRespStr)+"\n")
 }
 
 // /////////////////////////////////////////////////////////////////////////////

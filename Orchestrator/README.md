@@ -30,37 +30,37 @@ There endpoints are mainly used by the Management Tool and Cloud Administrators.
 ####  Get all Store Entries
 GET /mgmt/store
 
-Status ?% implemented
+Status 10% implemented
 
 ####  Add Store Entries
 POST /mgmt/store
 
-Status ?% implemented
+Status 10% implemented
 
 #### Get Store Entry by ID
 GET /mgmt/store/{id}
 
-Status ?% implemented
+Status 10% implemented
 
 #### Delete Store Entry by ID
 DELETE /mgmt/store/{id}
 
-Status ?% implemented
+Status 10% implemented
 
 #### Get Entries by Consumer
 POST /mgmt/store/all_by_consumer
 
-Status ?% implemented
+Status 10% implemented
 
 #### Get Top Priority Entries
 GET /mgmt/store/all_top_priority
 
-Status ?% implemented
+Status 10% implemented
 
 #### Modify Priorities
 POST /mgmt/store/modify_priorities
 
-Status ?% implemented
+Status 10% implemented
 
 ## Bugs
 n/a
