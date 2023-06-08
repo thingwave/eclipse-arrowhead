@@ -14,12 +14,12 @@ Status: 100% implemented
 #### Orchestration
 POST /orchestrator/orchestration
 
-Status: 50% implemented
+Status: 60% implemented
 
 #### Start store Orchestration by ID
 GET /orchestrator//orchestration/{id}
 
-Status 20% implemented
+Status 40% implemented
 
 ### Private endpoint description
 These services can only be used by other core services, therefore they are not part of the public API.
